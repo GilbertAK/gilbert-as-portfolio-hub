@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet Web Scraping & Automation | Gilbert ASANI KAMARA</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0f9ff', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 900: '#0c4a6e' },
+                        dark: { bg: '#020617', card: '#0f172a', border: '#1e293b' },
+                        bot: { 400: '#34d399', 500: '#10b981', 900: '#064e3b' } /* Vert émeraude pour l'Automation / Scraping */
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS pour le vrai téléchargement Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+        .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(30, 41, 59, 1); }
+        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        input[type=range] { -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #10b981; cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #1e293b; border-radius: 2px; }
+    </style>
+</head>
+<body class="bg-dark-bg text-slate-300 font-sans antialiased overflow-x-hidden">
+
+    <!-- OVERLAY MOBILE -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 z-40 hidden backdrop-blur-sm transition-opacity duration-300 opacity-0 lg:hidden"></div>
+
+    <!-- DEBUT DU SIDEBAR -->
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 md:w-80 bg-dark-card border-r border-dark-border z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col overflow-y-auto">
+        <button id="closeSidebar" class="absolute top-4 right-4 text-slate-400 hover:text-white lg:hidden">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+        <div class="p-8 flex-1 flex flex-col">
+            <div class="text-center mb-8">
+                <div class="relative inline-block">
+                    <img src="assets/profil.jpg" alt="Gilbert ASANI KAMARA" class="relative w-28 h-28 rounded-full border-2 border-brand-500 object-cover mx-auto shadow-xl" onerror="this.src='https://ui-avatars.com/api/?name=Gilbert+Asani&background=0ea5e9&color=fff&size=200'">
+                </div>
+                <h2 class="mt-4 text-xl font-bold text-white tracking-wide">Gilbert ASANI</h2>
+                <p class="text-sm text-brand-400 font-medium mt-1">Data & Web Specialist</p>
+            </div>
+            <div class="mb-8 text-sm text-slate-400 leading-relaxed">
+                <p>Développeur Python depuis 2019. Expert en Data Science, Automatisation et création de plateformes web sur-mesure pour booster la productivité des PME.</p>
+            </div>
+            <div class="mb-8">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-4">Mes Réalisations</h3>
+                <ul id="projectsList" class="space-y-2"></ul>
+            </div>
+
+            <!-- DEBUT SECTION TECHNICAL DNA -->
+            <div class="mb-10 pt-8 border-t border-dark-border">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-6 flex items-center justify-between">
+                    Technical DNA
+                    <i class="fas fa-code text-brand-500"></i>
+                </h3>
+                
+                <div class="space-y-5 text-sm">
+                    <!-- Compétence 1: Python -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Python / Web Scraping</span>
+                            <span class="text-slate-500">Expert</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 95%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 2: Data Science -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Data Science / IA (ML & DL)</span>
+                            <span class="text-slate-500">Avancé</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 82%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 3: Algorithmic Trading -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Algorithmic Trading</span>
+                            <span class="text-slate-500">Avancé</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 72%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 4: Full-Stack -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Full-Stack (JS/CSS)</span>
+                            <span class="text-slate-500">Expert</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 92%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- FIN SECTION TECHNICAL DNA -->
+
+            <!-- Contacts -->
+            <div class="mt-auto pt-6 border-t border-dark-border">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-4">Me Contacter</h3>
+                <a href="https://wa.me/243893958170" target="_blank" class="flex items-center text-sm text-slate-300 hover:text-green-400 mb-3 group">
+                    <div class="w-8 h-8 rounded bg-slate-800/50 flex items-center justify-center mr-3 group-hover:bg-green-400/20"><i class="fab fa-whatsapp text-lg group-hover:text-green-400"></i></div>
+                    +243 89 39 58 170
+                </a>
+                <a href="mailto:gilbertakg@gmail.com" class="flex items-center text-sm text-slate-300 hover:text-brand-400 group">
+                    <div class="w-8 h-8 rounded bg-slate-800/50 flex items-center justify-center mr-3 group-hover:bg-brand-500/20"><i class="fas fa-envelope text-sm group-hover:text-brand-400"></i></div>
+                    <span class="truncate">gilbertakg@gmail.com</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+    <!-- FIN DU SIDEBAR -->
+
+    <!-- MAIN CONTENT -->
+    <main class="lg:ml-80 relative min-h-screen pb-20">
+        <!-- Mobile Navbar -->
+        <nav class="lg:hidden flex items-center justify-between p-4 bg-dark-card border-b border-dark-border sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <img src="assets/profil.jpg" alt="Gilbert" class="w-10 h-10 rounded-full border border-brand-500 object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Gilbert+Asani&background=0ea5e9&color=fff'">
+                <span class="font-bold text-white">Portfolio Hub</span>
+            </div>
+            <button id="openSidebar" class="text-slate-300 hover:text-white p-2"><i class="fas fa-bars text-2xl"></i></button>
+        </nav>
+
+        <div class="px-4 md:px-8 py-8 max-w-7xl mx-auto">
+            
+            <!-- EN-TÊTE DU PROJET -->
+            <a href="index.html" class="inline-flex items-center text-bot-400 hover:text-bot-500 text-sm font-medium mb-6 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> Retour au Hub
+            </a>
+            
+            <header class="mb-10">
+                <div class="inline-block px-3 py-1 rounded bg-bot-500/10 border border-bot-500/30 text-bot-400 text-xs font-bold uppercase tracking-wider mb-4">Cas d'Étude Veille Concurrentielle & Tech</div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">Système d'Extraction Automatisée de Données & Veille Tarifaire</h1>
+                <p class="text-slate-400 text-lg max-w-3xl leading-relaxed">
+                    Conçu pour les environnements concurrentiels (distribution, import-export, tech comme <strong>Unique Technologies</strong> ou <strong>Ulwazi Group</strong>) : automatisez la collecte des prix du marché et des catalogues concurrents sans intervention humaine.
+                </p>
+            </header>
+
+            <!-- DASHBOARD AUTOMATION INTERACTIF -->
+            <div class="glass-card rounded-xl border-slate-700 overflow-hidden shadow-[0_10px_40px_-15px_rgba(16,185,129,0.2)]">
+                
+                <!-- PANNEAU DE CONTRÔLE SCRAPER -->
+                <div class="bg-slate-800/50 p-4 border-b border-slate-700 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-slate-400 font-medium"><i class="fas fa-filter text-bot-400 mr-1"></i> Filtrer par Catégorie de Produits</label>
+                        <select id="catSelect" class="bg-slate-900 border border-slate-700 text-white text-sm rounded-lg focus:ring-bot-500 focus:border-bot-500 block w-full p-2 outline-none">
+                            <option value="ALL">Toutes les catégories</option>
+                            <option value="Tech & Hardware">Tech & Hardware</option>
+                            <option value="Bureautique">Bureautique</option>
+                            <option value="Réseau & Sécurité">Réseau & Sécurité</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-slate-400 font-medium"><i class="fas fa-sync-alt text-bot-400 mr-1"></i> Fréquence du Bot Scrapy</label>
+                        <div class="flex items-center gap-3">
+                            <input type="range" id="freqSlider" min="1" max="24" step="1" value="6" class="w-full">
+                            <span id="valFreq" class="text-white font-bold text-sm w-16 text-right">Toutes les 6h</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end">
+                        <button id="btnTriggerBot" class="w-full md:w-auto px-4 py-2 bg-bot-500 hover:bg-bot-400 text-slate-950 font-bold text-sm rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg">
+                            <i class="fas fa-play"></i> Lancer le Bot Scraping
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ONGLETS DE NAVIGATION -->
+                <div class="flex overflow-x-auto border-b border-slate-700 hide-scrollbar" id="scraperTabs">
+                    <button class="tab-btn active px-6 py-4 text-sm font-medium text-bot-400 border-b-2 border-bot-500 whitespace-nowrap bg-bot-500/5" data-target="tab-data">
+                        <i class="fas fa-table mr-2"></i> Données Concurrentes (En direct)
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm font-medium text-slate-400 border-b-2 border-transparent hover:text-slate-200 whitespace-nowrap" data-target="tab-analytics">
+                        <i class="fas fa-chart-bar mr-2"></i> Analyse des Écarts de Prix
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm font-medium text-slate-400 border-b-2 border-transparent hover:text-slate-200 whitespace-nowrap" data-target="tab-bilan">
+                        <i class="fas fa-robot mr-2"></i> Architecture & Bilan
+                    </button>
+                </div>
+
+                <!-- CONTENU DES ONGLETS -->
+                <div class="p-4 md:p-6 bg-slate-900/30 w-full overflow-hidden">
+                    
+                    <!-- ONGLET 1 : DONNÉES ET TÉLÉCHARGEMENT EXCEL -->
+                    <div id="tab-data" class="tab-content active w-full">
+                        <div class="flex flex-col md:flex-row items-center justify-between mb-4 gap-4">
+                            <div>
+                                <h3 class="text-sm font-semibold text-white">Catalogue Concurrence (Supabase DB)</h3>
+                                <p class="text-xs text-slate-400">Extraction automatique par Selenium/Scrapy des sites rivaux.</p>
+                            </div>
+                            <!-- BOUTON DE VRAI TÉLÉCHARGEMENT EXCEL -->
+                            <button id="btnDownloadExcel" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-green-400 text-xs font-bold rounded-lg flex items-center gap-2 transition-colors">
+                                <i class="fas fa-file-excel text-base"></i> Télécharger en Excel (.xlsx)
+                            </button>
+                        </div>
+
+                        <div class="bg-slate-800/30 p-2 rounded-xl border border-slate-700 w-full overflow-hidden">
+                            <div class="overflow-x-auto w-full pb-2">
+                                <table class="w-full text-left text-sm text-slate-400 whitespace-nowrap">
+                                    <thead class="text-xs uppercase bg-slate-900 text-slate-500">
+                                        <tr>
+                                            <th class="px-4 py-3">Produit / Article</th>
+                                            <th class="px-4 py-3">Catégorie</th>
+                                            <th class="px-4 py-3">Concurrent (Rival)</th>
+                                            <th class="px-4 py-3">Prix Concurrence</th>
+                                            <th class="px-4 py-3">Notre Prix</th>
+                                            <th class="px-4 py-3">Écart / Position</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="scraperTableBody" class="divide-y divide-slate-700">
+                                        <!-- Rempli par JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET 2 : ANALYSE DES ÉCARTS DE PRIX -->
+                    <div id="tab-analytics" class="tab-content w-full">
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
+                                <p class="text-xs text-slate-400 mb-1">Produits Veillés</p>
+                                <h3 class="text-2xl font-bold text-white" id="stat-total-prod">124 articles</h3>
+                                <p class="text-xs text-bot-400 mt-1"><i class="fas fa-check-circle"></i> 100% Automatisé</p>
+                            </div>
+                            <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
+                                <p class="text-xs text-slate-400 mb-1">Positionnement Global</p>
+                                <h3 class="text-2xl font-bold text-bot-400">Compétitif (-4%)</h3>
+                                <p class="text-xs text-slate-500 mt-1">Moyenne du marché</p>
+                            </div>
+                            <div class="bg-bot-900/10 border border-bot-500/20 p-4 rounded-lg flex items-center">
+                                <i class="fas fa-bell text-3xl text-bot-400 opacity-50 mr-3"></i>
+                                <div>
+                                    <h4 class="text-xs font-bold text-bot-400 uppercase">Alertes Instantanées</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Notification Telegram/Email dès qu'un concurrent baisse ses prix.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/30 p-4 rounded-xl border border-slate-700 relative h-[280px] w-full">
+                            <canvas id="priceChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET 3 : BILAN & ARCHITECTURE -->
+                    <div id="tab-bilan" class="tab-content w-full">
+                        <div class="bg-bot-900/20 border border-bot-500/30 rounded-xl p-6 mb-6 relative overflow-hidden">
+                            <div class="absolute -right-10 -top-10 text-bot-500/10 text-9xl"><i class="fas fa-robot"></i></div>
+                            <h3 class="text-lg font-bold text-bot-400 mb-3 relative z-10"><i class="fas fa-cogs mr-2"></i> Bilan du Système & Automatisation</h3>
+                            <p class="text-slate-300 leading-relaxed text-sm relative z-10">
+                                Le système déploie des scripts Python hautement performants via <strong>Scrapy</strong> et <strong>Selenium</strong> pour contourner les protections anti-bot et extraire les tarifs en temps réel. Les données sont centralisées dans une base de données <strong>Supabase</strong>, permettant à l'équipe de direction de visualiser les tendances et de télécharger instantanément des rapports Excel propres sans aucune ressaisie manuelle.
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-8">
+                            <div class="flex items-start p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                                <i class="fas fa-shield-alt text-2xl text-bot-400 mr-4 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-white">Zéro Erreur Humaine</h4>
+                                    <p class="text-sm text-slate-400">Plus de veille manuelle sur les catalogues PDF ou sites rivaux. Tout est centralisé et actualisé en arrière-plan.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                                <i class="fas fa-file-excel text-2xl text-green-400 mr-4 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-white">Exports Excel Natifs</h4>
+                                    <p class="text-sm text-slate-400">Générez et téléchargez des rapports au format `.xlsx` directement depuis l'interface web pour vos réunions stratégiques.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center p-6 bg-gradient-to-r from-slate-900 to-bot-900/30 rounded-xl border border-slate-700 shadow-inner">
+                            <h3 class="text-xl font-bold text-white mb-2">Automatisez vos tâches répétitives dès aujourd'hui</h3>
+                            <p class="text-slate-400 mb-6 text-sm">Discutons de vos besoins d'extraction de données et de veille concurrentielle sur-mesure.</p>
+                            <a href="https://wa.me/243893958170?text=Bonjour%20Gilbert,%20je%20souhaite%20discuter%20d'un%20projet%20d'automatisation%20et%20web%20scraping." target="_blank" class="inline-flex px-8 py-3 bg-bot-500 hover:bg-bot-400 text-slate-950 rounded-lg font-bold items-center transition-transform hover:-translate-y-1 shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+                                <i class="fab fa-whatsapp text-xl mr-2"></i> Discuter du projet
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- GESTION DU SIDEBAR ---
+
+        // const ALL_PROJECTS = [
+        //     { id: 1, name: "Dashboard BI & Analytics", url: "projet1.html", icon: "fa-chart-pie" },
+        //     { id: 2, name: "Modèle de Prédiction ML", url: "projet2.html", icon: "fa-brain" },
+        //     { id: 3, name: "Web Scraping & Automation", url: "projet3.html", icon: "fa-robot" },
+        //     { id: 4, name: "Centre IoT & Flotte", url: "projet4.html", icon: "fa-satellite-dish" },
+        //     { id: 5, name: "Terminal Forex & Devises", url: "projet5.html", icon: "fa-chart-line" }
+        // ];
+
+        const ALL_PROJECTS = [
+            { id: 4, name: "Centre IoT & Flotte", url: "projet4.html", icon: "fa-satellite-dish" },
+            { id: 5, name: "Terminal Forex & Devises", url: "projet5.html", icon: "fa-chart-line" },
+            // #######
+            { id: 1, name: "Dashboard BI & Analytics", url: "projet1.html", icon: "fa-chart-pie" },
+            { id: 2, name: "Modèle de Prédiction ML", url: "projet2.html", icon: "fa-brain" },
+            { id: 3, name: "Web Scraping & Automation", url: "projet3.html", icon: "fa-robot" },
+        ];
+
+        const projectsListEl = document.getElementById('projectsList');
+        ALL_PROJECTS.forEach(p => {
+            const isActive = p.id === 3 ? 'bg-bot-500/20 text-bot-400 border-bot-500/50' : 'hover:bg-slate-800/50 text-slate-300 hover:text-white border-transparent';
+            projectsListEl.innerHTML += `
+                <li><a href="${p.url}" class="group flex items-center p-2 rounded-lg transition-colors border ${isActive}">
+                    <span class="w-7 h-7 rounded-md bg-slate-800 flex items-center justify-center mr-3"><i class="fas ${p.icon} text-xs"></i></span>
+                    <span class="text-sm truncate font-medium">${p.name}</span>
+                </a></li>`;
+        });
+
+        // Toggle Sidebar Mobile
+        document.getElementById('openSidebar').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.remove('hidden');
+            setTimeout(() => document.getElementById('sidebarOverlay').classList.add('opacity-0'), 10);
+        });
+        const closeMenu = () => {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.add('opacity-0');
+            setTimeout(() => document.getElementById('sidebarOverlay').classList.add('hidden'), 300);
+        };
+        document.getElementById('closeSidebar').addEventListener('click', closeMenu);
+        document.getElementById('sidebarOverlay').addEventListener('click', closeMenu);
+
+        // --- GESTION DES ONGLETS ---
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('active', 'text-bot-400', 'border-bot-500', 'bg-bot-500/5');
+                    t.classList.add('text-slate-400', 'border-transparent');
+                });
+                tab.classList.add('active', 'text-bot-400', 'border-bot-500', 'bg-bot-500/5');
+                tab.classList.remove('text-slate-400', 'border-transparent');
+                
+                contents.forEach(c => c.classList.remove('active'));
+                document.getElementById(tab.dataset.target).classList.add('active');
+            });
+        });
+
+        // --- DATA DONNÉES SCRAPING ---
+        const rawScrapedData = [
+            { produit: "Laptop ProBook 15\"", categorie: "Tech & Hardware", concurrent: "TechStore RDC", prixRival: 850, notrePrix: 820 },
+            { produit: "Switch Réseau 24 Ports", categorie: "Réseau & Sécurité", concurrent: "KinNet Distribution", prixRival: 310, notrePrix: 325 },
+            { produit: "Onduleur 1500VA", categorie: "Tech & Hardware", concurrent: "Alpha Solutions", prixRival: 240, notrePrix: 230 },
+            { produit: "Pack Rame Papier A4 (x5)", categorie: "Bureautique", concurrent: "BuroMarket", prixRival: 28, notrePrix: 27 },
+            { produit: "Routeur Wi-Fi 6 Pro", categorie: "Réseau & Sécurité", concurrent: "TechStore RDC", prixRival: 145, notrePrix: 140 },
+            { produit: "Cartouche Encre Noire HP", categorie: "Bureautique", concurrent: "KinNet Distribution", prixRival: 65, notrePrix: 65 }
+        ];
+
+        let priceChart;
+
+        function initChart() {
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            priceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: rawScrapedData.map(d => d.produit),
+                    datasets: [
+                        { label: 'Prix Concurrent', data: rawScrapedData.map(d => d.prixRival), backgroundColor: '#64748b', borderRadius: 4 },
+                        { label: 'Notre Prix', data: rawScrapedData.map(d => d.notrePrix), backgroundColor: '#10b981', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#cbd5e1', font: {size: 11} } } },
+                    scales: { y: { grid: { color: 'rgba(30,41,59,0.5)' }, ticks: { color: '#64748b' } }, x: { grid: { display: false }, ticks: { color: '#64748b', maxRotation: 20 } } }
+                }
+            });
+        }
+
+        function renderTableAndData() {
+            const selectedCat = document.getElementById('catSelect').value;
+            const tableBody = document.getElementById('scraperTableBody');
+            tableBody.innerHTML = '';
+
+            let filtered = rawScrapedData;
+            if(selectedCat !== 'ALL') {
+                filtered = rawScrapedData.filter(d => d.categorie === selectedCat);
+            }
+
+            filtered.forEach(item => {
+                let diff = item.notrePrix - item.prixRival;
+                let badgeColor = diff < 0 ? 'bg-green-500/10 text-green-400 border-green-500/20' : (diff > 0 ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-slate-700/50 text-slate-300 border-slate-600');
+                let positionText = diff < 0 ? `Moins cher (${diff}$)` : (diff > 0 ? `Plus cher (+${diff}$)` : 'Aligné');
+
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition-colors border-b border-slate-700/50 last:border-0" data-category="${item.categorie}">
+                        <td class="px-4 py-3 font-medium text-white">${item.produit}</td>
+                        <td class="px-4 py-3 text-slate-400 text-xs">${item.categorie}</td>
+                        <td class="px-4 py-3 text-slate-300">${item.concurrent}</td>
+                        <td class="px-4 py-3 text-slate-300 font-bold">${item.prixRival} $</td>
+                        <td class="px-4 py-3 text-white font-bold">${item.notrePrix} $</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 border rounded-md text-xs font-bold ${badgeColor}">${positionText}</span></td>
+                    </tr>`;
+            });
+        }
+
+        // --- FONCTION DE VRAI TÉLÉCHARGEMENT EXCEL ---
+        document.getElementById('btnDownloadExcel').addEventListener('click', () => {
+            const selectedCat = document.getElementById('catSelect').value;
+            let dataToExport = rawScrapedData;
+            if(selectedCat !== 'ALL') {
+                dataToExport = rawScrapedData.filter(d => d.categorie === selectedCat);
+            }
+
+            // Transformation des données pour un affichage propre dans Excel
+            const formattedData = dataToExport.map(item => ({
+                "Produit": item.produit,
+                "Catégorie": item.categorie,
+                "Concurrent": item.concurrent,
+                "Prix Concurrence ($)": item.prixRival,
+                "Notre Prix ($)": item.notrePrix,
+                "Écart ($)": item.notrePrix - item.prixRival
+            }));
+
+            // Création du classeur Excel via SheetJS
+            const worksheet = XLSX.utils.json_to_sheet(formattedData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Veille Concurrentielle");
+
+            // Déclenchement automatique du téléchargement du fichier .xlsx
+            XLSX.writeFile(workbook, `Veille_Tarifaire_${selectedCat}_Gilbert_Asani.xlsx`);
+        });
+
+        // Simulation d'exécution du Bot
+        document.getElementById('btnTriggerBot').addEventListener('click', () => {
+            const btn = document.getElementById('btnTriggerBot');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scraping en cours...';
+            btn.classList.add('opacity-75');
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i> Données Mises à Jour !';
+                btn.classList.remove('opacity-75');
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-play"></i> Lancer le Bot Scraping';
+                }, 2000);
+            }, 1500);
+        });
+
+        document.getElementById('catSelect').addEventListener('change', renderTableAndData);
+        document.getElementById('freqSlider').addEventListener('input', (e) => {
+            document.getElementById('valFreq').innerText = `Toutes les ${e.target.value}h`;
+        });
+
+        initChart();
+        renderTableAndData();
+    </script>
+</body>
+</html>

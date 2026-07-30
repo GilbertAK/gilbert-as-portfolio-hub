@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centre de Contrôle IoT & Flotte | Gilbert ASANI KAMARA</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0f9ff', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 900: '#0c4a6e' },
+                        dark: { bg: '#020617', card: '#0f172a', border: '#1e293b' },
+                        iot: { 400: '#22d3ee', 500: '#06b6d4', 900: '#164e63' } /* Cyan électrique pour l'IoT / Flotte */
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+        .glass-card { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(30, 41, 59, 1); }
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        input[type=range] { -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #06b6d4; cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px rgba(6, 182, 212, 0.6); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #1e293b; border-radius: 2px; }
+        .pulse-dot { animation: pulseGlow 1s infinite alternate; }
+        @keyframes pulseGlow { from { opacity: 0.4; } to { opacity: 1; filter: drop-shadow(0 0 8px #06b6d4); } }
+    </style>
+</head>
+<body class="bg-dark-bg text-slate-300 font-sans antialiased overflow-x-hidden">
+
+    <!-- OVERLAY MOBILE -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 z-40 hidden backdrop-blur-sm transition-opacity duration-300 opacity-0 lg:hidden"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 md:w-80 bg-dark-card border-r border-dark-border z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col overflow-y-auto">
+        <button id="closeSidebar" class="absolute top-4 right-4 text-slate-400 hover:text-white lg:hidden">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+        <div class="p-8 flex-1 flex flex-col">
+            <div class="text-center mb-8">
+                <div class="relative inline-block">
+                    <img src="assets/profil.jpg" alt="Gilbert ASANI KAMARA" class="relative w-28 h-28 rounded-full border-2 border-brand-500 object-cover mx-auto shadow-xl" onerror="this.src='https://ui-avatars.com/api/?name=Gilbert+Asani&background=0ea5e9&color=fff&size=200'">
+                </div>
+                <h2 class="mt-4 text-xl font-bold text-white tracking-wide">Gilbert ASANI</h2>
+                <p class="text-sm text-brand-400 font-medium mt-1">Data & Web Specialist</p>
+            </div>
+            <div class="mb-8 text-sm text-slate-400 leading-relaxed">
+                <p>Développeur Python & IoT depuis 2019. Conception de plateformes de supervision en temps réel et d'architectures web haute performance.</p>
+            </div>
+            <div class="mb-8">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-4">Mes Réalisations</h3>
+                <ul id="projectsList" class="space-y-2"></ul>
+            </div>
+
+            <!-- DEBUT SECTION TECHNICAL DNA -->
+            <div class="mb-10 pt-8 border-t border-dark-border">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-6 flex items-center justify-between">
+                    Technical DNA
+                    <i class="fas fa-code text-brand-500"></i>
+                </h3>
+                
+                <div class="space-y-5 text-sm">
+                    <!-- Compétence 1: Python -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Python / Web Scraping</span>
+                            <span class="text-slate-500">Expert</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 95%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 2: Data Science -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Data Science / IA (ML & DL)</span>
+                            <span class="text-slate-500">Avancé</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 82%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 3: Algorithmic Trading -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Algorithmic Trading</span>
+                            <span class="text-slate-500">Avancé</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 72%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 4: Full-Stack -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Full-Stack (JS/CSS)</span>
+                            <span class="text-slate-500">Expert</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 92%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- FIN SECTION TECHNICAL DNA -->
+
+            <!-- Contacts -->
+            <div class="mt-auto pt-6 border-t border-dark-border">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-4">Me Contacter</h3>
+                <a href="https://wa.me/243893958170" target="_blank" class="flex items-center text-sm text-slate-300 hover:text-green-400 mb-3 group">
+                    <div class="w-8 h-8 rounded bg-slate-800/50 flex items-center justify-center mr-3 group-hover:bg-green-400/20"><i class="fab fa-whatsapp text-lg group-hover:text-green-400"></i></div>
+                    +243 89 39 58 170
+                </a>
+                <a href="mailto:gilbertakg@gmail.com" class="flex items-center text-sm text-slate-300 hover:text-brand-400 group">
+                    <div class="w-8 h-8 rounded bg-slate-800/50 flex items-center justify-center mr-3 group-hover:bg-brand-500/20"><i class="fas fa-envelope text-sm group-hover:text-brand-400"></i></div>
+                    <span class="truncate">gilbertakg@gmail.com</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="lg:ml-80 relative min-h-screen pb-20">
+        <!-- Mobile Navbar -->
+        <nav class="lg:hidden flex items-center justify-between p-4 bg-dark-card border-b border-dark-border sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <img src="assets/profil.jpg" alt="Gilbert" class="w-10 h-10 rounded-full border border-brand-500 object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Gilbert+Asani&background=0ea5e9&color=fff'">
+                <span class="font-bold text-white">Portfolio Hub</span>
+            </div>
+            <button id="openSidebar" class="text-slate-300 hover:text-white p-2"><i class="fas fa-bars text-2xl"></i></button>
+        </nav>
+
+        <div class="px-4 md:px-8 py-8 max-w-7xl mx-auto">
+            
+            <!-- EN-TÊTE -->
+            <a href="index.html" class="inline-flex items-center text-iot-400 hover:text-iot-500 text-sm font-medium mb-6 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> Retour au Hub
+            </a>
+            
+            <header class="mb-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-iot-500/10 border border-iot-500/30 text-iot-400 text-xs font-bold uppercase tracking-wider mb-4">
+                    <span class="w-2 h-2 rounded-full bg-iot-400 pulse-dot"></span> Flux IoT en direct (0,5s)
+                </div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">Centre de Contrôle Opérationnel & Télémétrie Flotte</h1>
+                <p class="text-slate-400 text-lg max-w-3xl leading-relaxed">
+                    Plateforme de supervision hautement dynamique conçue pour le transport et la logistique (ex: <strong>Working Ladies Cabs</strong>). Suivi instantané des véhicules, télémétrie moteur et alertes de trafic en temps réel.
+                </p>
+            </header>
+
+            <!-- PANNEAU DE SIMULATION INTERACTIF (CONTRÔLES TEMPS RÉEL) -->
+            <div class="glass-card p-4 rounded-xl border-slate-700 mb-6 shadow-[0_10px_30px_-15px_rgba(6,182,212,0.15)]">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 w-full md:w-auto">
+                        <div class="w-10 h-10 rounded-lg bg-iot-500/20 border border-iot-500/40 flex items-center justify-center text-iot-400">
+                            <i class="fas fa-sliders-h text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-white">Simulateur de Paramètres Flotte</h3>
+                            <p class="text-xs text-slate-400">Modifiez les variables pour observer la réactivité immédiate de l'interface.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full md:w-auto">
+                        <!-- Contrôle Vitesse Moyenne -->
+                        <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                            <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                <span>Facteur Vitesse</span>
+                                <span id="valSpeedFactor" class="text-iot-400 font-bold">1.0x</span>
+                            </div>
+                            <input type="range" id="speedSlider" min="0.5" max="2.5" step="0.1" value="1.0" class="w-full">
+                        </div>
+
+                        <!-- Champ Nom de Zone / Trafic -->
+                        <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 flex flex-col justify-between">
+                            <label class="text-xs text-slate-400 mb-1">Zone de Trafic Active</label>
+                            <input type="text" id="zoneInput" value="Zone Urbaine Centre" class="bg-slate-800 border border-slate-700 text-white text-xs rounded px-2 py-1 outline-none focus:border-iot-500">
+                        </div>
+
+                        <!-- Bouton Alerte Incident -->
+                        <div class="flex items-center">
+                            <button id="btnToggleIncident" class="w-full py-2 px-3 bg-slate-800 hover:bg-red-900/40 border border-slate-700 hover:border-red-500/50 text-slate-300 hover:text-red-400 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2">
+                                <i class="fas fa-exclamation-triangle" id="incidentIcon"></i> <span id="incidentText">Mode Normal</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DASHBOARD PRINCIPAL AVEC ONGLETS ERGONOMIQUES -->
+            <div class="glass-card rounded-xl border-slate-700 overflow-hidden shadow-xl">
+                
+                <!-- NAVIGATION PAR ONGLETS -->
+                <div class="flex overflow-x-auto border-b border-slate-700 hide-scrollbar bg-slate-900/40" id="iotTabs">
+                    <button class="tab-btn active px-6 py-4 text-sm font-medium text-iot-400 border-b-2 border-iot-500 whitespace-nowrap bg-iot-500/5 flex items-center gap-2" data-target="tab-telemetrie">
+                        <i class="fas fa-tachometer-alt"></i> Télémétrie Live (0,5s)
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm font-medium text-slate-400 border-b-2 border-transparent hover:text-slate-200 whitespace-nowrap flex items-center gap-2" data-target="tab-flotte">
+                        <i class="fas fa-car-side"></i> Suivi Véhicules & Incidents
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm font-medium text-slate-400 border-b-2 border-transparent hover:text-slate-200 whitespace-nowrap flex items-center gap-2" data-target="tab-bilan">
+                        <i class="fas fa-brain"></i> Bilan & Interprétation Live
+                    </button>
+                </div>
+
+                <!-- CONTENU DES ONGLETS -->
+                <div class="p-4 md:p-6 bg-slate-900/30">
+                    
+                    <!-- ONGLET 1 : TÉLÉMÉTRIE LIVE -->
+                    <div id="tab-telemetrie" class="tab-content active">
+                        <!-- Indicateurs clés haut -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/60">
+                                <p class="text-xs text-slate-400 mb-1">Véhicules Actifs</p>
+                                <h3 class="text-2xl font-extrabold text-white" id="statVehicles">24 / 24</h3>
+                                <p class="text-xs text-iot-400 mt-1"><i class="fas fa-signal"></i> Connecté MQTT</p>
+                            </div>
+                            <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/60">
+                                <p class="text-xs text-slate-400 mb-1">Vitesse Moyenne Flotte</p>
+                                <h3 class="text-2xl font-extrabold text-iot-400" id="statAvgSpeed">48 km/h</h3>
+                                <p class="text-xs text-slate-500 mt-1" id="statZoneLabel">Zone Urbaine Centre</p>
+                            </div>
+                            <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/60">
+                                <p class="text-xs text-slate-400 mb-1">Carburant Global</p>
+                                <h3 class="text-2xl font-extrabold text-white" id="statFuel">71%</h3>
+                                <div class="w-full bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
+                                    <div id="fuelBar" class="bg-iot-400 h-full transition-all duration-300" style="width: 71%"></div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/60">
+                                <p class="text-xs text-slate-400 mb-1">Température Moteur Moy.</p>
+                                <h3 class="text-2xl font-extrabold text-emerald-400" id="statTemp">88 °C</h3>
+                                <p class="text-xs text-emerald-500 mt-1"><i class="fas fa-check-circle"></i> Optimal</p>
+                            </div>
+                        </div>
+
+                        <!-- Graphique Chart.js dynamique -->
+                        <div class="bg-slate-800/30 p-4 rounded-xl border border-slate-700 relative h-[300px] w-full">
+                            <canvas id="telemetryChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET 2 : SUIVI VÉHICULES & INCIDENTS -->
+                    <div id="tab-flotte" class="tab-content">
+                        <div class="flex flex-col md:flex-row items-center justify-between mb-4 gap-2">
+                            <div>
+                                <h3 class="text-sm font-semibold text-white">Registre des Véhicules en Mouvement</h3>
+                                <p class="text-xs text-slate-400">Actualisation des positions et statuts toutes les 500 millisecondes.</p>
+                            </div>
+                            <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 text-iot-400 font-mono">
+                                <i class="fas fa-clock mr-1"></i> Sync Live active
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/30 p-2 rounded-xl border border-slate-700 overflow-x-auto">
+                            <table class="w-full text-left text-sm text-slate-400 whitespace-nowrap">
+                                <thead class="text-xs uppercase bg-slate-900 text-slate-500">
+                                    <tr>
+                                        <th class="px-4 py-3">ID Véhicule</th>
+                                        <th class="px-4 py-3">Chauffeur</th>
+                                        <th class="px-4 py-3">Vitesse Instantanée</th>
+                                        <th class="px-4 py-3">Température</th>
+                                        <th class="px-4 py-3">Statut / Alerte</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fleetTableBody" class="divide-y divide-slate-700">
+                                    <!-- Rempli en temps réel par JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET 3 : BILAN & INTERPRÉTATION LIVE -->
+                    <div id="tab-bilan" class="tab-content">
+                        <div class="grid md:grid-cols-3 gap-6 mb-6">
+                            <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700 md:col-span-2">
+                                <h3 class="text-base font-bold text-iot-400 mb-3"><i class="fas fa-microchip mr-2"></i> Architecture Technique & Flux MQTT</h3>
+                                <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                                    Ce système s'appuie sur une pile logicielle moderne combinant <strong>Python (Flask/FastAPI)</strong> pour le backend, des <strong>WebSockets</strong> pour pousser les flux de télémétrie sans latence, et un courtier <strong>MQTT</strong> simulant les boîtiers GPS embarqués dans les véhicules.
+                                </p>
+                                <div class="grid grid-cols-2 gap-4 text-xs">
+                                    <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+                                        <span class="text-slate-400 block mb-1">Fréquence de rafraîchissement</span>
+                                        <strong class="text-white text-sm">500 ms (0,5s)</strong>
+                                    </div>
+                                    <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+                                        <span class="text-slate-400 block mb-1">Consommation bande passante</span>
+                                        <strong class="text-iot-400 text-sm">Ultra-légère (&lt; 15 Ko/s)</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-slate-900 to-iot-900/30 p-5 rounded-xl border border-slate-700 flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-sm font-bold text-white mb-2"><i class="fas fa-shield-alt text-iot-400 mr-2"></i> Interprétation en Direct</h4>
+                                    <p id="liveInterpretation" class="text-xs text-slate-300 leading-relaxed">
+                                        État normal du réseau. Les flux de télémétrie sont stables sur l'ensemble de la flotte active.
+                                    </p>
+                                </div>
+                                <div class="mt-4 pt-4 border-t border-slate-800 text-right">
+                                    <span class="text-[10px] text-iot-400 uppercase font-bold tracking-wider">Analyseur IA Interne</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bouton de Conversion Final -->
+                        <div class="text-center p-6 bg-slate-900/80 rounded-xl border border-slate-700 shadow-inner">
+                            <h3 class="text-xl font-bold text-white mb-2">Envie de connecter et suivre votre flotte en direct ?</h3>
+                            <p class="text-slate-400 mb-6 text-sm">Discutons de l'intégration d'une solution IoT sur-mesure pour vos véhicules et opérations.</p>
+                            <a href="https://wa.me/243893958170?text=Bonjour%20Gilbert,%20je%20souhaite%20discuter%20d'une%20solution%20IoT%20pour%20ma%20flotte." target="_blank" class="inline-flex px-8 py-3 bg-iot-500 hover:bg-iot-400 text-slate-950 rounded-lg font-bold items-center transition-transform hover:-translate-y-1 shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+                                <i class="fab fa-whatsapp text-xl mr-2"></i> Discuter d'une solution IoT
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SCRIPTS DE GESTION TEMPS RÉEL (0,5 SECONDE) -->
+    <script>
+        // --- SIDEBAR ---
+
+        // const ALL_PROJECTS = [
+        //     { id: 1, name: "Dashboard BI & Analytics", url: "projet1.html", icon: "fa-chart-pie" },
+        //     { id: 2, name: "Modèle de Prédiction ML", url: "projet2.html", icon: "fa-brain" },
+        //     { id: 3, name: "Web Scraping & Automation", url: "projet3.html", icon: "fa-robot" },
+        //     { id: 4, name: "Centre IoT & Flotte", url: "projet4.html", icon: "fa-satellite-dish" },
+        //     { id: 5, name: "Terminal Forex & Devises", url: "projet5.html", icon: "fa-chart-line" }
+        // ];
+
+        const ALL_PROJECTS = [
+            { id: 4, name: "Centre IoT & Flotte", url: "projet4.html", icon: "fa-satellite-dish" },
+            { id: 5, name: "Terminal Forex & Devises", url: "projet5.html", icon: "fa-chart-line" },
+            // #######
+            { id: 1, name: "Dashboard BI & Analytics", url: "projet1.html", icon: "fa-chart-pie" },
+            { id: 2, name: "Modèle de Prédiction ML", url: "projet2.html", icon: "fa-brain" },
+            { id: 3, name: "Web Scraping & Automation", url: "projet3.html", icon: "fa-robot" },
+        ];
+
+        const projectsListEl = document.getElementById('projectsList');
+        ALL_PROJECTS.forEach(p => {
+            const isActive = p.id === 4 ? 'bg-iot-500/20 text-iot-400 border-iot-500/50' : 'hover:bg-slate-800/50 text-slate-300 hover:text-white border-transparent';
+            projectsListEl.innerHTML += `
+                <li><a href="${p.url}" class="group flex items-center p-2 rounded-lg transition-colors border ${isActive}">
+                    <span class="w-7 h-7 rounded-md bg-slate-800 flex items-center justify-center mr-3"><i class="fas ${p.icon} text-xs"></i></span>
+                    <span class="text-sm truncate font-medium">${p.name}</span>
+                </a></li>`;
+        });
+
+        // Toggle Sidebar Mobile
+        document.getElementById('openSidebar').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.remove('hidden');
+            setTimeout(() => document.getElementById('sidebarOverlay').classList.add('opacity-0'), 10);
+        });
+        const closeMenu = () => {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.add('opacity-0');
+            setTimeout(() => document.getElementById('sidebarOverlay').classList.add('hidden'), 300);
+        };
+        document.getElementById('closeSidebar').addEventListener('click', closeMenu);
+        document.getElementById('sidebarOverlay').addEventListener('click', closeMenu);
+
+        // --- GESTION DES ONGLETS ---
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('active', 'text-iot-400', 'border-iot-500', 'bg-iot-500/5');
+                    t.classList.add('text-slate-400', 'border-transparent');
+                });
+                tab.classList.add('active', 'text-iot-400', 'border-iot-500', 'bg-iot-500/5');
+                tab.classList.remove('text-slate-400', 'border-transparent');
+                
+                contents.forEach(c => c.classList.remove('active'));
+                document.getElementById(tab.dataset.target).classList.add('active');
+            });
+        });
+
+        // --- ÉTAT DE SIMULATION & TEMPS RÉEL (0,5s) ---
+        let isIncidentMode = false;
+        const btnToggleIncident = document.getElementById('btnToggleIncident');
+        const incidentIcon = document.getElementById('incidentIcon');
+        const incidentText = document.getElementById('incidentText');
+        const speedSlider = document.getElementById('speedSlider');
+        const valSpeedFactor = document.getElementById('valSpeedFactor');
+        const zoneInput = document.getElementById('zoneInput');
+
+        btnToggleIncident.addEventListener('click', () => {
+            isIncidentMode = !isIncidentMode;
+            if(isIncidentMode) {
+                btnToggleIncident.className = "w-full py-2 px-3 bg-red-950/60 border border-red-500 text-red-400 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(239,68,68,0.3)]";
+                incidentIcon.className = "fas fa-radiation fa-spin text-red-500";
+                incidentText.innerText = "Alerte Trafic / Incident Actif";
+            } else {
+                btnToggleIncident.className = "w-full py-2 px-3 bg-slate-800 hover:bg-red-900/40 border border-slate-700 text-slate-300 hover:text-red-400 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2";
+                incidentIcon.className = "fas fa-exclamation-triangle";
+                incidentText.innerText = "Mode Normal";
+            }
+        });
+
+        speedSlider.addEventListener('input', (e) => {
+            valSpeedFactor.innerText = parseFloat(e.target.value).toFixed(1) + 'x';
+        });
+
+        // Données initiales des véhicules de la flotte
+        const fleetData = [
+            { id: "WL-CAB-101", chauffeur: "Sarah M.", vitesseBase: 45, tempBase: 86, statut: "En transit" },
+            { id: "WL-CAB-102", chauffeur: "Christian K.", vitesseBase: 52, tempBase: 90, statut: "En transit" },
+            { id: "WL-LOG-201", chauffeur: "Patrick B.", vitesseBase: 38, tempBase: 84, statut: "Livraison en cours" },
+            { id: "WL-CAB-103", chauffeur: "Nelly T.", vitesseBase: 60, tempBase: 92, statut: "Accélération" },
+            { id: "WL-LOG-202", chauffeur: "Junior L.", vitesseBase: 25, tempBase: 82, statut: "Ralenti / Trafic" }
+        ];
+
+        // --- CONFIGURATION GRAPHIQUE CHART.JS ---
+        const ctx = document.getElementById('telemetryChart').getContext('2d');
+        const timeLabels = ['-10s', '-8s', '-6s', '-4s', '-2s', 'Live (0s)'];
+        
+        const telemetryChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: 'Vitesse Flotte (km/h)',
+                        data: [42, 46, 44, 49, 47, 48],
+                        borderColor: '#06b6d4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Température Moteur (°C / 2)',
+                        data: [43, 44, 43, 45, 44, 44],
+                        borderColor: '#10b981',
+                        borderWidth: 2,
+                        borderDash: [4, 4],
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 200 }, // Animation fluide pour le 0.5s
+                plugins: { legend: { labels: { color: '#cbd5e1', font: { size: 11 } } } },
+                scales: {
+                    y: { grid: { color: 'rgba(30,41,59,0.5)' }, ticks: { color: '#64748b' }, min: 10, max: 80 },
+                    x: { grid: { display: false }, ticks: { color: '#64748b' } }
+                }
+            }
+        });
+
+        // --- BOUCLE DE MISE À JOUR TOUTES LES 0,5 SECONDES (500 ms) ---
+        setInterval(() => {
+            const speedMultiplier = parseFloat(speedSlider.value);
+            const currentZone = zoneInput.value;
+            document.getElementById('statZoneLabel').innerText = currentZone;
+
+            // Calculs dynamiques basés sur le facteur et l'incident
+            let baseAvgSpeed = isIncidentMode ? Math.floor(Math.random() * 15) + 12 : Math.floor(Math.random() * 10) + 45;
+            let currentAvgSpeed = Math.round(baseAvgSpeed * speedMultiplier);
+            let currentFuel = isIncidentMode ? 65 : 71;
+            let currentTemp = isIncidentMode ? 96 : 88;
+
+            // Mise à jour des cartes UI
+            document.getElementById('statAvgSpeed').innerText = currentAvgSpeed + ' km/h';
+            document.getElementById('statFuel').innerText = currentFuel + '%';
+            document.getElementById('fuelBar.style.width', currentFuel + '%');
+            document.getElementById('statTemp').innerText = currentTemp + ' °C';
+
+            // Mise à jour du graphique en direct
+            const speedDataset = telemetryChart.data.datasets[0].data;
+            speedDataset.shift();
+            speedDataset.push(currentAvgSpeed);
+            
+            const tempDataset = telemetryChart.data.datasets[1].data;
+            tempDataset.shift();
+            tempDataset.push(Math.round(currentTemp / 2));
+            
+            telemetryChart.update('none'); // Update sans re-render lourd pour garder les 0.5s fluides
+
+            // Mise à jour du tableau des véhicules
+            const tableBody = document.getElementById('fleetTableBody');
+            tableBody.innerHTML = '';
+
+            fleetData.forEach((veh, index) => {
+                let randomVar = Math.floor(Math.random() * 8) - 4;
+                let vSpeed = Math.max(10, Math.round((veh.vitesseBase + randomVar) * speedMultiplier));
+                let vTemp = veh.tempBase + (isIncidentMode ? 8 : 0) + Math.floor(Math.random() * 3);
+                
+                let statusBadge = '';
+                if(isIncidentMode) {
+                    statusBadge = `<span class="px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-bold"><i class="fas fa-exclamation-triangle"></i> Ralenti / Alerte</span>`;
+                } else if(vSpeed > 55) {
+                    statusBadge = `<span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-bold">⚠️ Excès léger</span>`;
+                } else {
+                    statusBadge = `<span class="px-2 py-0.5 rounded bg-iot-500/10 text-iot-400 border border-iot-500/20 text-xs font-bold"><i class="fas fa-check"></i> Normal</span>`;
+                }
+
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-slate-800/40 transition-colors border-b border-slate-700/50 last:border-0">
+                        <td class="px-4 py-3 font-mono text-white text-xs font-bold">${veh.id}</td>
+                        <td class="px-4 py-3 text-slate-300 text-xs">${veh.chauffeur}</td>
+                        <td class="px-4 py-3 text-iot-400 font-bold text-xs">${vSpeed} km/h</td>
+                        <td class="px-4 py-3 text-slate-300 text-xs">${vTemp} °C</td>
+                        <td class="px-4 py-3">${statusBadge}</td>
+                    </tr>`;
+            });
+
+            // Mise à jour de l'interprétation IA Live
+            const interpEl = document.getElementById('liveInterpretation');
+            if(isIncidentMode) {
+                interpEl.innerHTML = `<strong class="text-red-400">ALERTE SYSTÈME :</strong> Perturbation détectée sur <span class="text-white">${currentZone}</span>. Baisse de la vitesse moyenne de la flotte et élévation thermique des moteurs enregistrées.`;
+            } else {
+                interpEl.innerHTML = `Flux stables sur <span class="text-white">${currentZone}</span>. Facteur de vitesse appliqué à <span class="text-iot-400">${valSpeedFactor.innerText}</span>. Aucun incident critique sur les 24 véhicules connectés.`;
+            }
+
+        }, 500); // 500 millisecondes (0,5 seconde)
+    </script>
+</body>
+</html>
+
+
+

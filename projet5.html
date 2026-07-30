@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal de Trading & Forex Live | Gilbert ASANI KAMARA</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0f9ff', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 900: '#0c4a6e' },
+                        dark: { bg: '#020617', card: '#0f172a', border: '#1e293b' },
+                        forex: { 400: '#f59e0b', 500: '#d97706', 900: '#78350f' } /* Ambre / Or boursier pour le Trading */
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d97706; }
+        .glass-card { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(30, 41, 59, 1); }
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        input[type=range] { -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #f59e0b; cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px rgba(245, 158, 11, 0.6); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #1e293b; border-radius: 2px; }
+        .pulse-gold { animation: pulseGlow 1s infinite alternate; }
+        @keyframes pulseGlow { from { opacity: 0.4; } to { opacity: 1; filter: drop-shadow(0 0 8px #f59e0b); } }
+        .flash-green { animation: flashG 0.4s ease; }
+        .flash-red { animation: flashR 0.4s ease; }
+        @keyframes flashG { 0% { background-color: rgba(16, 185, 129, 0.4); } 100% { background-color: transparent; } }
+        @keyframes flashR { 0% { background-color: rgba(239, 68, 68, 0.4); } 100% { background-color: transparent; } }
+    </style>
+</head>
+<body class="bg-dark-bg text-slate-300 font-sans antialiased overflow-x-hidden">
+
+    <!-- OVERLAY MOBILE -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 z-40 hidden backdrop-blur-sm transition-opacity duration-300 opacity-0 lg:hidden"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 md:w-80 bg-dark-card border-r border-dark-border z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col overflow-y-auto">
+        <button id="closeSidebar" class="absolute top-4 right-4 text-slate-400 hover:text-white lg:hidden">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+        <div class="p-8 flex-1 flex flex-col">
+            <div class="text-center mb-8">
+                <div class="relative inline-block">
+                    <img src="assets/profil.jpg" alt="Gilbert ASANI KAMARA" class="relative w-28 h-28 rounded-full border-2 border-brand-500 object-cover mx-auto shadow-xl" onerror="this.src='https://ui-avatars.com/api/?name=Gilbert+Asani&background=0ea5e9&color=fff&size=200'">
+                </div>
+                <h2 class="mt-4 text-xl font-bold text-white tracking-wide">Gilbert ASANI</h2>
+                <p class="text-sm text-brand-400 font-medium mt-1">Data & Web Specialist</p>
+            </div>
+            <div class="mb-8 text-sm text-slate-400 leading-relaxed">
+                <p>Développeur Full-Stack & Solutions Financières depuis 2019. Conception d'interfaces de trading boursier et de terminaux de change haute fréquence.</p>
+            </div>
+            <div class="mb-8">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-4">Mes Réalisations</h3>
+                <ul id="projectsList" class="space-y-2"></ul>
+            </div>
+
+            <!-- DEBUT SECTION TECHNICAL DNA -->
+            <div class="mb-10 pt-8 border-t border-dark-border">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-6 flex items-center justify-between">
+                    Technical DNA
+                    <i class="fas fa-code text-brand-500"></i>
+                </h3>
+                
+                <div class="space-y-5 text-sm">
+                    <!-- Compétence 1: Python -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Python / Web Scraping</span>
+                            <span class="text-slate-500">Expert</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 95%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 2: Data Science -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Data Science / IA (ML & DL)</span>
+                            <span class="text-slate-500">Avancé</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 82%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 3: Algorithmic Trading -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Algorithmic Trading</span>
+                            <span class="text-slate-500">Avancé</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 72%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 4: Full-Stack -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Full-Stack (JS/CSS)</span>
+                            <span class="text-slate-500">Expert</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 92%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- FIN SECTION TECHNICAL DNA -->
+
+            <!-- Contacts -->
+            <div class="mt-auto pt-6 border-t border-dark-border">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-4">Me Contacter</h3>
+                <a href="https://wa.me/243893958170" target="_blank" class="flex items-center text-sm text-slate-300 hover:text-green-400 mb-3 group">
+                    <div class="w-8 h-8 rounded bg-slate-800/50 flex items-center justify-center mr-3 group-hover:bg-green-400/20"><i class="fab fa-whatsapp text-lg group-hover:text-green-400"></i></div>
+                    +243 89 39 58 170
+                </a>
+                <a href="mailto:gilbertakg@gmail.com" class="flex items-center text-sm text-slate-300 hover:text-brand-400 group">
+                    <div class="w-8 h-8 rounded bg-slate-800/50 flex items-center justify-center mr-3 group-hover:bg-brand-500/20"><i class="fas fa-envelope text-sm group-hover:text-brand-400"></i></div>
+                    <span class="truncate">gilbertakg@gmail.com</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="lg:ml-80 relative min-h-screen pb-20">
+        <!-- Mobile Navbar -->
+        <nav class="lg:hidden flex items-center justify-between p-4 bg-dark-card border-b border-dark-border sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <img src="assets/profil.jpg" alt="Gilbert" class="w-10 h-10 rounded-full border border-brand-500 object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Gilbert+Asani&background=0ea5e9&color=fff'">
+                <span class="font-bold text-white">Portfolio Hub</span>
+            </div>
+            <button id="openSidebar" class="text-slate-300 hover:text-white p-2"><i class="fas fa-bars text-2xl"></i></button>
+        </nav>
+
+        <div class="px-4 md:px-8 py-8 max-w-7xl mx-auto">
+            
+            <!-- EN-TÊTE -->
+            <a href="index.html" class="inline-flex items-center text-forex-400 hover:text-forex-500 text-sm font-medium mb-6 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> Retour au Hub
+            </a>
+            
+            <header class="mb-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-forex-500/10 border border-forex-500/30 text-forex-400 text-xs font-bold uppercase tracking-wider mb-4">
+                    <span class="w-2 h-2 rounded-full bg-forex-400 pulse-gold"></span> Flux Boursier Live (0,5s)
+                </div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">Terminal de Surveillance des Cours des Marchés & Taux de Change</h1>
+                <p class="text-slate-400 text-lg max-w-3xl leading-relaxed">
+                    Conçu pour les institutions financières, banques et structures d'import-export (ex: <strong>Ulwazi Group</strong>). Anticipez les variations de devises (USD/CDF, EUR/USD) à la fraction de seconde pour sécuriser vos marges.
+                </p>
+            </header>
+
+            <!-- PANNEAU DE SIMULATION INTERACTIF (CONTRÔLES VOLATILITÉ) -->
+            <div class="glass-card p-4 rounded-xl border-slate-700 mb-6 shadow-[0_10px_30px_-15px_rgba(245,158,11,0.15)]">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 w-full md:w-auto">
+                        <div class="w-10 h-10 rounded-lg bg-forex-500/20 border border-forex-500/40 flex items-center justify-center text-forex-400">
+                            <i class="fas fa-sliders-h text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-white">Moteur de Simulation Marché</h3>
+                            <p class="text-xs text-slate-400">Ajustez l'amplitude de volatilité et filtrez la paire active en direct.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full md:w-auto">
+                        <!-- Facteur de Volatilité -->
+                        <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                            <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                <span>Volatilité (Spread)</span>
+                                <span id="valVolatility" class="text-forex-400 font-bold">1.0x</span>
+                            </div>
+                            <input type="range" id="volatilitySlider" min="0.2" max="3.0" step="0.2" value="1.0" class="w-full">
+                        </div>
+
+                        <!-- Sélection Paire Active -->
+                        <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 flex flex-col justify-between">
+                            <label class="text-xs text-slate-400 mb-1">Paire Principale Graphique</label>
+                            <select id="pairSelect" class="bg-slate-800 border border-slate-700 text-white text-xs rounded px-2 py-1 outline-none focus:border-forex-500">
+                                <option value="USD/CDF">USD / CDF (Franc Congolais)</option>
+                                <option value="EUR/USD">EUR / USD (Euro / Dollar)</option>
+                                <option value="GBP/USD">GBP / USD (Livre / Dollar)</option>
+                            </select>
+                        </div>
+
+                        <!-- Bouton Choc Marché / Tendance Haussière -->
+                        <div class="flex items-center">
+                            <button id="btnShockMarket" class="w-full py-2 px-3 bg-slate-800 hover:bg-forex-900/40 border border-slate-700 hover:border-forex-500/50 text-slate-300 hover:text-forex-400 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2">
+                                <i class="fas fa-bolt" id="shockIcon"></i> <span id="shockText">Activer Choc Haussier</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DASHBOARD PRINCIPAL AVEC ONGLETS ERGONOMIQUES -->
+            <div class="glass-card rounded-xl border-slate-700 overflow-hidden shadow-xl">
+                
+                <!-- NAVIGATION PAR ONGLETS -->
+                <div class="flex overflow-x-auto border-b border-slate-700 hide-scrollbar bg-slate-900/40" id="forexTabs">
+                    <button class="tab-btn active px-6 py-4 text-sm font-medium text-forex-400 border-b-2 border-forex-500 whitespace-nowrap bg-forex-500/5 flex items-center gap-2" data-target="tab-terminal">
+                        <i class="fas fa-chart-line"></i> Terminal Cotation Live (0,5s)
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm font-medium text-slate-400 border-b-2 border-transparent hover:text-slate-200 whitespace-nowrap flex items-center gap-2" data-target="tab-ordres">
+                        <i class="fas fa-exchange-alt"></i> Carnet d'Ordres & Alertes
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm font-medium text-slate-400 border-b-2 border-transparent hover:text-slate-200 whitespace-nowrap flex items-center gap-2" data-target="tab-bilan">
+                        <i class="fas fa-shield-alt"></i> Bilan de Volatilité & API
+                    </button>
+                </div>
+
+                <!-- CONTENU DES ONGLETS -->
+                <div class="p-4 md:p-6 bg-slate-900/30">
+                    
+                    <!-- ONGLET 1 : TERMINAL COTATION LIVE -->
+                    <div id="tab-terminal" class="tab-content active">
+                        <!-- Indicateurs clés haut -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/60">
+                                <p class="text-xs text-slate-400 mb-1">Cours Actuel (<span id="lblCurPair">USD/CDF</span>)</p>
+                                <h3 class="text-2xl font-extrabold text-white" id="statLiveRate">2850.50</h3>
+                                <p class="text-xs text-emerald-400 mt-1" id="statRateChange"><i class="fas fa-arrow-up"></i> +0.18% (Live)</p>
+                            </div>
+                            <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/60">
+                                <p class="text-xs text-slate-400 mb-1">Prix Achat (Bid)</p>
+                                <h3 class="text-2xl font-extrabold text-forex-400" id="statBid">2849.80</h3>
+                                <p class="text-xs text-slate-500 mt-1">Spread serré</p>
+                            </div>
+                            <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/60">
+                                <p class="text-xs text-slate-400 mb-1">Prix Vente (Ask)</p>
+                                <h3 class="text-2xl font-extrabold text-white" id="statAsk">2851.20</h3>
+                                <p class="text-xs text-slate-500 mt-1">Liquidité instantanée</p>
+                            </div>
+                            <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/60">
+                                <p class="text-xs text-slate-400 mb-1">Volume Échangé (24h)</p>
+                                <h3 class="text-2xl font-extrabold text-emerald-400">$ 42.8 M</h3>
+                                <p class="text-xs text-emerald-500 mt-1"><i class="fas fa-check-circle"></i> Marché Actif</p>
+                            </div>
+                        </div>
+
+                        <!-- Graphique Chart.js dynamique -->
+                        <div class="bg-slate-800/30 p-4 rounded-xl border border-slate-700 relative h-[300px] w-full">
+                            <canvas id="forexChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET 2 : CARNET D'ORDRES & ALERTES -->
+                    <div id="tab-ordres" class="tab-content">
+                        <div class="flex flex-col md:flex-row items-center justify-between mb-4 gap-2">
+                            <div>
+                                <h3 class="text-sm font-semibold text-white">Tableau des Devises & Variations en Direct</h3>
+                                <p class="text-xs text-slate-400">Clignotement instantané selon la tendance haussière ou baissière (0,5s).</p>
+                            </div>
+                            <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 text-forex-400 font-mono">
+                                <i class="fas fa-sync-alt fa-spin mr-1"></i> WebSocket Connecté
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/30 p-2 rounded-xl border border-slate-700 overflow-x-auto">
+                            <table class="w-full text-left text-sm text-slate-400 whitespace-nowrap">
+                                <thead class="text-xs uppercase bg-slate-900 text-slate-500">
+                                    <tr>
+                                        <th class="px-4 py-3">Paire / Actif</th>
+                                        <th class="px-4 py-3">Cours Bid</th>
+                                        <th class="px-4 py-3">Cours Ask</th>
+                                        <th class="px-4 py-3">Variation (%)</th>
+                                        <th class="px-4 py-3">Statut / Tendance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="forexTableBody" class="divide-y divide-slate-700">
+                                    <!-- Rempli en temps réel par JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET 3 : BILAN DE VOLATILITÉ & API -->
+                    <div id="tab-bilan" class="tab-content">
+                        <div class="grid md:grid-cols-3 gap-6 mb-6">
+                            <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700 md:col-span-2">
+                                <h3 class="text-base font-bold text-forex-400 mb-3"><i class="fas fa-cogs mr-2"></i> Architecture & Couverture de Risque</h3>
+                                <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                                    Ce terminal connecte les structures financières aux flux interbancaires mondiaux via des passerelles sécurisées. L'algorithme intégré calcule en continu les seuils de risque de change pour automatiser les ordres d'achat d'importation au moment le plus opportun.
+                                </p>
+                                <div class="grid grid-cols-2 gap-4 text-xs">
+                                    <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+                                        <span class="text-slate-400 block mb-1">Latence d'exécution</span>
+                                        <strong class="text-white text-sm">&lt; 50 millisecondes</strong>
+                                    </div>
+                                    <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+                                        <span class="text-slate-400 block mb-1">Sécurité des flux</span>
+                                        <strong class="text-forex-400 text-sm">Chiffrement SSL / API REST</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-slate-900 to-forex-900/30 p-5 rounded-xl border border-slate-700 flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-sm font-bold text-white mb-2"><i class="fas fa-chart-pie text-forex-400 mr-2"></i> Analyseur Marché Live</h4>
+                                    <p id="liveInterpretation" class="text-xs text-slate-300 leading-relaxed">
+                                        Marché stable. Les spreads sur USD/CDF et EUR/USD demeurent dans les seuils optimaux pour la validation des factures d'importation.
+                                    </p>
+                                </div>
+                                <div class="mt-4 pt-4 border-t border-slate-800 text-right">
+                                    <span class="text-[10px] text-forex-400 uppercase font-bold tracking-wider">Algorithme de Couverture</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bouton de Conversion Final -->
+                        <div class="text-center p-6 bg-slate-900/80 rounded-xl border border-slate-700 shadow-inner">
+                            <h3 class="text-xl font-bold text-white mb-2">Sécurisez vos taux de change avec un outil automatisé</h3>
+                            <p class="text-slate-400 mb-6 text-sm">Discutons de l'intégration d'un terminal de surveillance des devises sur-mesure pour votre structure.</p>
+                            <a href="https://wa.me/243893958170?text=Bonjour%20Gilbert,%20je%20souhaite%20obtenir%20un%20accès%20démo%20pour%20le%20terminal%20de%20change." target="_blank" class="inline-flex px-8 py-3 bg-forex-500 hover:bg-forex-400 text-slate-950 rounded-lg font-bold items-center transition-transform hover:-translate-y-1 shadow-[0_0_20px_rgba(245,158,11,0.4)]">
+                                <i class="fab fa-whatsapp text-xl mr-2"></i> Demander un accès démo
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SCRIPTS DE GESTION TEMPS RÉEL (0,5 SECONDE) -->
+    <script>
+        // --- SIDEBAR ---
+        // const ALL_PROJECTS = [
+        //     { id: 1, name: "Dashboard BI & Analytics", url: "projet1.html", icon: "fa-chart-pie" },
+        //     { id: 2, name: "Modèle de Prédiction ML", url: "projet2.html", icon: "fa-brain" },
+        //     { id: 3, name: "Web Scraping & Automation", url: "projet3.html", icon: "fa-robot" },
+        //     { id: 4, name: "Centre IoT & Flotte", url: "projet4.html", icon: "fa-satellite-dish" },
+        //     { id: 5, name: "Terminal Forex & Devises", url: "projet5.html", icon: "fa-chart-line" }
+        // ];
+
+
+        const ALL_PROJECTS = [
+            { id: 4, name: "Centre IoT & Flotte", url: "projet4.html", icon: "fa-satellite-dish" },
+            { id: 5, name: "Terminal Forex & Devises", url: "projet5.html", icon: "fa-chart-line" },
+            // #######
+            { id: 1, name: "Dashboard BI & Analytics", url: "projet1.html", icon: "fa-chart-pie" },
+            { id: 2, name: "Modèle de Prédiction ML", url: "projet2.html", icon: "fa-brain" },
+            { id: 3, name: "Web Scraping & Automation", url: "projet3.html", icon: "fa-robot" },
+        ];
+
+        const projectsListEl = document.getElementById('projectsList');
+        ALL_PROJECTS.forEach(p => {
+            const isActive = p.id === 5 ? 'bg-forex-500/20 text-forex-400 border-forex-500/50' : 'hover:bg-slate-800/50 text-slate-300 hover:text-white border-transparent';
+            projectsListEl.innerHTML += `
+                <li><a href="${p.url}" class="group flex items-center p-2 rounded-lg transition-colors border ${isActive}">
+                    <span class="w-7 h-7 rounded-md bg-slate-800 flex items-center justify-center mr-3"><i class="fas ${p.icon} text-xs"></i></span>
+                    <span class="text-sm truncate font-medium">${p.name}</span>
+                </a></li>`;
+        });
+
+        // Toggle Sidebar Mobile
+        document.getElementById('openSidebar').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.remove('hidden');
+            setTimeout(() => document.getElementById('sidebarOverlay').classList.add('opacity-0'), 10);
+        });
+        const closeMenu = () => {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.add('opacity-0');
+            setTimeout(() => document.getElementById('sidebarOverlay').classList.add('hidden'), 300);
+        };
+        document.getElementById('closeSidebar').addEventListener('click', closeMenu);
+        document.getElementById('sidebarOverlay').addEventListener('click', closeMenu);
+
+        // --- GESTION DES ONGLETS ---
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('active', 'text-forex-400', 'border-forex-500', 'bg-forex-500/5');
+                    t.classList.add('text-slate-400', 'border-transparent');
+                });
+                tab.classList.add('active', 'text-forex-400', 'border-forex-500', 'bg-forex-500/5');
+                tab.classList.remove('text-slate-400', 'border-transparent');
+                
+                contents.forEach(c => c.classList.remove('active'));
+                document.getElementById(tab.dataset.target).classList.add('active');
+            });
+        });
+
+        // --- ÉTAT DE SIMULATION & TEMPS RÉEL (0,5s) ---
+        let isShockMode = false;
+        const btnShockMarket = document.getElementById('btnShockMarket');
+        const shockIcon = document.getElementById('shockIcon');
+        const shockText = document.getElementById('shockText');
+        const volatilitySlider = document.getElementById('volatilitySlider');
+        const valVolatility = document.getElementById('valVolatility');
+        const pairSelect = document.getElementById('pairSelect');
+
+        btnShockMarket.addEventListener('click', () => {
+            isShockMode = !isShockMode;
+            if(isShockMode) {
+                btnShockMarket.className = "w-full py-2 px-3 bg-amber-950/60 border border-amber-500 text-amber-400 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(245,158,11,0.3)]";
+                shockIcon.className = "fas fa-chart-line fa-spin text-amber-500";
+                shockText.innerText = "Choc Haussier Actif !";
+            } else {
+                btnShockMarket.className = "w-full py-2 px-3 bg-slate-800 hover:bg-forex-900/40 border border-slate-700 text-slate-300 hover:text-forex-400 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2";
+                shockIcon.className = "fas fa-bolt";
+                shockText.innerText = "Activer Choc Haussier";
+            }
+        });
+
+        volatilitySlider.addEventListener('input', (e) => {
+            valVolatility.innerText = parseFloat(e.target.value).toFixed(1) + 'x';
+        });
+
+        // Données initiales des devises
+        const forexPairs = [
+            { pair: "USD/CDF", baseRate: 2850.00, variation: 0.18 },
+            { pair: "EUR/USD", baseRate: 1.0850, variation: -0.05 },
+            { pair: "GBP/USD", baseRate: 1.2640, variation: 0.12 },
+            { pair: "USD/ZAR", baseRate: 18.4500, variation: -0.32 },
+            { pair: "EUR/CDF", baseRate: 3092.25, variation: 0.22 }
+        ];
+
+        // --- CONFIGURATION GRAPHIQUE CHART.JS ---
+        const ctx = document.getElementById('forexChart').getContext('2d');
+        const timeLabels = ['-10s', '-8s', '-6s', '-4s', '-2s', 'Live (0s)'];
+        
+        const forexChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: 'Cours en Direct',
+                        data: [2848, 2849, 2848.5, 2850, 2849.8, 2850.5],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 200 }, // Animation fluide pour le 0.5s
+                plugins: { legend: { labels: { color: '#cbd5e1', font: { size: 11 } } } },
+                scales: {
+                    y: { grid: { color: 'rgba(30,41,59,0.5)' }, ticks: { color: '#64748b' } },
+                    x: { grid: { display: false }, ticks: { color: '#64748b' } }
+                }
+            }
+        });
+
+        // --- BOUCLE DE MISE À JOUR TOUTES LES 0,5 SECONDES (500 ms) ---
+        setInterval(() => {
+            const volFactor = parseFloat(volatilitySlider.value);
+            const activePairName = pairSelect.value;
+            document.getElementById('lblCurPair').innerText = activePairName;
+
+            // Mise à jour de la paire active principale affichée sur les cartes du haut
+            let targetObj = forexPairs.find(p => p.pair === activePairName);
+            if(!targetObj) targetObj = forexPairs[0];
+
+            let randomDelta = (Math.random() - (isShockMode ? 0.3 : 0.48)) * 1.5 * volFactor;
+            targetObj.baseRate += randomDelta;
+            let currentRate = Number(targetObj.baseRate.toFixed(activePairName.includes('USD/') && !activePairName.includes('USD/CDF') ? 4 : 2));
+            let currentBid = Number((currentRate - 0.75 * volFactor).toFixed(2));
+            let currentAsk = Number((currentRate + 0.75 * volFactor).toFixed(2));
+            let currentVar = Number((targetObj.variation + randomDelta / 100).toFixed(2));
+
+            // Mise à jour cartes UI
+            document.getElementById('statLiveRate').innerText = currentRate;
+            document.getElementById('statBid').innerText = currentBid;
+            document.getElementById('statAsk').innerText = currentAsk;
+
+            const changeEl = document.getElementById('statRateChange');
+            if(currentVar >= 0) {
+                changeEl.className = "text-xs text-emerald-400 mt-1";
+                changeEl.innerHTML = `<i class="fas fa-arrow-up"></i> +${currentVar}% (Live)`;
+            } else {
+                changeEl.className = "text-xs text-red-400 mt-1";
+                changeEl.innerHTML = `<i class="fas fa-arrow-down"></i> ${currentVar}% (Live)`;
+            }
+
+            // Mise à jour du graphique en direct
+            const datasetVals = forexChart.data.datasets[0].data;
+            datasetVals.shift();
+            datasetVals.push(currentRate);
+            forexChart.update('none'); // Update sans re-render lourd
+
+            // Mise à jour du tableau complet des devises
+            const tableBody = document.getElementById('forexTableBody');
+            tableBody.innerHTML = '';
+
+            forexPairs.forEach((item) => {
+                let deltaItem = (Math.random() - (isShockMode ? 0.3 : 0.49)) * 1.2 * volFactor;
+                item.baseRate += deltaItem;
+                let rateVal = item.baseRate.toFixed(item.pair.includes('USD/') && !item.pair.includes('USD/CDF') ? 4 : 2);
+                let bVal = (item.baseRate - 0.5).toFixed(2);
+                let aVal = (item.baseRate + 0.5).toFixed(2);
+                let vVal = (item.variation + deltaItem / 50).toFixed(2);
+
+                let badgeColor = vVal >= 0 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20';
+                let iconTrend = vVal >= 0 ? '<i class="fas fa-arrow-up"></i> Haussier' : '<i class="fas fa-arrow-down"></i> Baissier';
+
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-slate-800/40 transition-colors border-b border-slate-700/50 last:border-0">
+                        <td class="px-4 py-3 font-mono text-white text-xs font-bold">${item.pair}</td>
+                        <td class="px-4 py-3 text-slate-300 text-xs font-bold">${bVal}</td>
+                        <td class="px-4 py-3 text-slate-300 text-xs font-bold">${aVal}</td>
+                        <td class="px-4 py-3 text-xs font-bold ${vVal >= 0 ? 'text-emerald-400' : 'text-red-400'}">${vVal >= 0 ? '+' : ''}${vVal}%</td>
+                        <td class="px-4 py-3"><span class="px-2 py-0.5 rounded border text-xs font-bold ${badgeColor}">${iconTrend}</span></td>
+                    </tr>`;
+            });
+
+            // Mise à jour de l'interprétation IA Live
+            const interpEl = document.getElementById('liveInterpretation');
+            if(isShockMode) {
+                interpEl.innerHTML = `<strong class="text-amber-400">CHOC MARCHÉ DÉTECTÉ :</strong> Forte volatilité active sur <span class="text-white">${activePairName}</span>. L'algorithme recommande de geler les conversions temporairement ou d'activer la couverture automatique.`;
+            } else {
+                interpEl.innerHTML = `Flux fluides sur <span class="text-white">${activePairName}</span>. Volatilité indexée à <span class="text-forex-400">${valVolatility.innerText}</span>. Spread interbancaire optimal pour les règlements fournisseurs.`;
+            }
+
+        }, 500); // 500 millisecondes (0,5 seconde)
+    </script>
+</body>
+</html>
+

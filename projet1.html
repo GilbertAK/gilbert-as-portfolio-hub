@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet BI & Analytics | Gilbert ASANI KAMARA</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0f9ff', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 900: '#0c4a6e' },
+                        dark: { bg: '#020617', card: '#0f172a', border: '#1e293b' }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #38bdf8; }
+        .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(30, 41, 59, 1); }
+        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Custom range slider styling */
+        input[type=range] { -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #0ea5e9; cursor: pointer; margin-top: -6px; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #1e293b; border-radius: 2px; }
+    </style>
+</head>
+<body class="bg-dark-bg text-slate-300 font-sans antialiased overflow-x-hidden">
+
+    <!-- OVERLAY MOBILE -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 z-40 hidden backdrop-blur-sm transition-opacity duration-300 opacity-0 lg:hidden"></div>
+
+    <!-- DEBUT DU SIDEBAR -->
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 md:w-80 bg-dark-card border-r border-dark-border z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col overflow-y-auto">
+        <button id="closeSidebar" class="absolute top-4 right-4 text-slate-400 hover:text-white lg:hidden">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+        <div class="p-8 flex-1 flex flex-col">
+            <div class="text-center mb-8">
+                <div class="relative inline-block">
+                    <img src="assets/profil.jpg" alt="Gilbert ASANI KAMARA" class="relative w-28 h-28 rounded-full border-2 border-brand-500 object-cover mx-auto shadow-xl" onerror="this.src='https://ui-avatars.com/api/?name=Gilbert+Asani&background=0ea5e9&color=fff&size=200'">
+                </div>
+                <h2 class="mt-4 text-xl font-bold text-white tracking-wide">Gilbert ASANI</h2>
+                <p class="text-sm text-brand-400 font-medium mt-1">Data & Web Specialist</p>
+            </div>
+            <div class="mb-8 text-sm text-slate-400 leading-relaxed">
+                <p>Développeur Python depuis 2019. Expert en Data Science, Automatisation et création de plateformes web sur-mesure pour booster la productivité des PME.</p>
+            </div>
+            <div class="mb-8">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-4">Mes Réalisations</h3>
+                <ul id="projectsList" class="space-y-2"></ul>
+                <button id="toggleProjectsBtn" class="mt-3 text-sm text-brand-400 hover:text-brand-300 flex items-center transition-colors hidden">
+                    <i class="fas fa-chevron-down mr-2 text-xs"></i> <span id="toggleProjectsText">Voir plus</span>
+                </button>
+            </div>
+
+            <!-- DEBUT SECTION TECHNICAL DNA -->
+            <div class="mb-10 pt-8 border-t border-dark-border">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-6 flex items-center justify-between">
+                    Technical DNA
+                    <i class="fas fa-code text-brand-500"></i>
+                </h3>
+                
+                <div class="space-y-5 text-sm">
+                    <!-- Compétence 1: Python -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Python / Web Scraping</span>
+                            <span class="text-slate-500">Expert</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 95%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 2: Data Science -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Data Science / IA (ML & DL)</span>
+                            <span class="text-slate-500">Avancé</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 82%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 3: Algorithmic Trading -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Algorithmic Trading</span>
+                            <span class="text-slate-500">Avancé</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 72%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 4: Full-Stack -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Full-Stack (JS/CSS)</span>
+                            <span class="text-slate-500">Expert</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 92%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- FIN SECTION TECHNICAL DNA -->
+
+            <!-- Contacts -->
+            <div class="mt-auto pt-6 border-t border-dark-border">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-4">Me Contacter</h3>
+                <a href="https://wa.me/243893958170" target="_blank" class="flex items-center text-sm text-slate-300 hover:text-green-400 mb-3 group">
+                    <div class="w-8 h-8 rounded bg-slate-800/50 flex items-center justify-center mr-3 group-hover:bg-green-400/20"><i class="fab fa-whatsapp text-lg group-hover:text-green-400"></i></div>
+                    +243 89 39 58 170
+                </a>
+                <a href="mailto:gilbertakg@gmail.com" class="flex items-center text-sm text-slate-300 hover:text-brand-400 group">
+                    <div class="w-8 h-8 rounded bg-slate-800/50 flex items-center justify-center mr-3 group-hover:bg-brand-500/20"><i class="fas fa-envelope text-sm group-hover:text-brand-400"></i></div>
+                    <span class="truncate">gilbertakg@gmail.com</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+    <!-- FIN DU SIDEBAR -->
+
+    <!-- MAIN CONTENT -->
+    <main class="lg:ml-80 relative min-h-screen pb-20">
+        <!-- Mobile Navbar -->
+        <nav class="lg:hidden flex items-center justify-between p-4 bg-dark-card border-b border-dark-border sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <img src="assets/profil.jpg" alt="Gilbert" class="w-10 h-10 rounded-full border border-brand-500 object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Gilbert+Asani&background=0ea5e9&color=fff'">
+                <span class="font-bold text-white">Portfolio Hub</span>
+            </div>
+            <button id="openSidebar" class="text-slate-300 hover:text-white p-2"><i class="fas fa-bars text-2xl"></i></button>
+        </nav>
+
+        <div class="px-4 md:px-8 py-8 max-w-7xl mx-auto">
+            
+            <!-- EN-TÊTE DU PROJET -->
+            <a href="index.html" class="inline-flex items-center text-brand-400 hover:text-brand-300 text-sm font-medium mb-6 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> Retour au Hub
+            </a>
+            
+            <header class="mb-10">
+                <div class="inline-block px-3 py-1 rounded bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs font-bold uppercase tracking-wider mb-4">Cas d'Étude B2B</div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">Plateforme de BI & Gestion de Stock en Temps Réel</h1>
+                <p class="text-slate-400 text-lg max-w-3xl leading-relaxed">
+                    Une PME multi-boutiques perdait des heures à consolider des fichiers Excel éparpillés. Solution : Ce dashboard interactif (développé en Python/Flask + JS) qui connecte les données de ventes et alerte sur les ruptures de stock.
+                </p>
+            </header>
+
+            <!-- DASHBOARD INTERACTIF -->
+            <div class="glass-card rounded-xl border-slate-700 overflow-hidden shadow-2xl">
+                
+                <!-- PANNEAU DE CONTRÔLE (Filtres) -->
+                <div class="bg-slate-800/50 p-4 border-b border-slate-700 flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div class="w-full md:w-auto flex items-center gap-3">
+                        <label class="text-sm text-slate-400 font-medium whitespace-nowrap"><i class="fas fa-filter mr-1"></i> Secteur :</label>
+                        <select id="categoryFilter" class="bg-slate-900 border border-slate-700 text-white text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block w-full p-2 outline-none">
+                            <option value="all">Vue Globale (Tous)</option>
+                            <option value="energie">Équipements Solaire & Énergie</option>
+                            <option value="logistique">Pièces Auto & Logistique</option>
+                        </select>
+                    </div>
+
+                    <div class="w-full md:w-1/3 flex flex-col gap-1">
+                        <div class="flex justify-between text-xs text-slate-400">
+                            <span>Simulateur d'Objectif (Mensuel)</span>
+                            <span id="sliderValueText" class="text-brand-400 font-bold">15 000 $</span>
+                        </div>
+                        <input type="range" id="objectifSlider" min="5000" max="50000" step="1000" value="15000" class="w-full">
+                    </div>
+                </div>
+
+                <!-- ONGLETS DE NAVIGATION -->
+                <div class="flex overflow-x-auto border-b border-slate-700 hide-scrollbar" id="dashboardTabs">
+                    <button class="tab-btn active px-6 py-4 text-sm font-medium text-brand-400 border-b-2 border-brand-500 whitespace-nowrap bg-brand-500/5" data-target="tab-ventes">
+                        <i class="fas fa-chart-line mr-2"></i> Vue Globale & Ventes
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm font-medium text-slate-400 border-b-2 border-transparent hover:text-slate-200 whitespace-nowrap" data-target="tab-stocks">
+                        <i class="fas fa-boxes mr-2"></i> Gestion des Stocks
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm font-medium text-slate-400 border-b-2 border-transparent hover:text-slate-200 whitespace-nowrap" data-target="tab-bilan">
+                        <i class="fas fa-lightbulb mr-2"></i> Bilan & Interprétation
+                    </button>
+                </div>
+
+                <!-- CONTENU DES ONGLETS -->
+                <div class="p-4 md:p-6 bg-slate-900/30">
+                    
+                    <!-- ONGLET 1 : VENTES -->
+                    <div id="tab-ventes" class="tab-content active">
+                        <!-- KPIs -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
+                                <p class="text-xs text-slate-400 mb-1">Chiffre d'Affaires</p>
+                                <h3 class="text-xl md:text-2xl font-bold text-white" id="kpi-ca">15 000 $</h3>
+                                <p class="text-xs text-green-400 mt-1"><i class="fas fa-arrow-up"></i> +12% vs mois prec.</p>
+                            </div>
+                            <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
+                                <p class="text-xs text-slate-400 mb-1">Commandes</p>
+                                <h3 class="text-xl md:text-2xl font-bold text-white" id="kpi-cmds">142</h3>
+                                <p class="text-xs text-green-400 mt-1"><i class="fas fa-arrow-up"></i> +5%</p>
+                            </div>
+                            <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
+                                <p class="text-xs text-slate-400 mb-1">Progression Objectif</p>
+                                <h3 class="text-xl md:text-2xl font-bold text-brand-400" id="kpi-prog">100%</h3>
+                                <div class="w-full bg-slate-700 h-1.5 mt-2 rounded-full overflow-hidden">
+                                    <div id="kpi-prog-bar" class="bg-brand-500 h-1.5 w-[100%] transition-all duration-500"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid lg:grid-cols-3 gap-6 min-w-0">
+                            <!-- Graphique -->
+                            <div class="lg:col-span-2 bg-slate-800/30 p-4 rounded-xl border border-slate-700 min-w-0 overflow-hidden">
+                                <h3 class="text-sm font-semibold text-slate-300 mb-4">Évolution des ventes (Derniers mois)</h3>
+                                <div class="relative h-[250px] w-full"><canvas id="salesChart"></canvas></div>
+                            </div>
+                            <!-- Top Produits -->
+                            <div class="bg-slate-800/30 p-4 rounded-xl border border-slate-700 min-w-0 overflow-hidden">
+                                <h3 class="text-sm font-semibold text-slate-300 mb-4">Top 5 Produits Ventes</h3>
+                                <ul class="space-y-3" id="topProductsList">
+                                    <!-- Rempli par JS -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET 2 : STOCKS -->
+                    <div id="tab-stocks" class="tab-content">
+                        <div class="grid md:grid-cols-3 gap-6 mb-6">
+                            <div class="bg-red-900/20 p-4 rounded-xl border border-red-900/50 flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs text-red-400 mb-1">Rupture Critique</p>
+                                    <h3 class="text-2xl font-bold text-white" id="kpi-rupture">3 articles</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center text-red-500"><i class="fas fa-exclamation-triangle"></i></div>
+                            </div>
+                            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700 flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs text-slate-400 mb-1">Valeur du Stock</p>
+                                    <h3 class="text-2xl font-bold text-white" id="kpi-stock-val">42 500 $</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500"><i class="fas fa-warehouse"></i></div>
+                            </div>
+                        </div>
+
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div class="bg-slate-800/30 p-4 rounded-xl border border-slate-700">
+                                <h3 class="text-sm font-semibold text-slate-300 mb-4">Répartition de la valeur du stock</h3>
+                                <div class="relative h-[250px] w-full flex justify-center"><canvas id="stockChart"></canvas></div>
+                            </div>
+                            <div class="bg-slate-800/30 rounded-xl border border-slate-700 overflow-hidden">
+                                <table class="w-full text-left text-sm text-slate-400">
+                                    <thead class="text-xs uppercase bg-slate-900 text-slate-500">
+                                        <tr><th class="px-4 py-3">Produit Critique</th><th class="px-4 py-3">Stock Restant</th><th class="px-4 py-3">Action</th></tr>
+                                    </thead>
+                                    <tbody id="stockTableBody" class="divide-y divide-slate-700">
+                                        <!-- JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET 3 : BILAN -->
+                    <div id="tab-bilan" class="tab-content">
+                        <div class="bg-brand-900/20 border border-brand-500/30 rounded-xl p-6 mb-6">
+                            <h3 class="text-lg font-bold text-brand-400 mb-3"><i class="fas fa-robot mr-2"></i> Analyse Instantanée (Interprétation IA)</h3>
+                            <p id="interpretationText" class="text-slate-300 leading-relaxed text-sm">
+                                <!-- Généré dynamiquement -->
+                            </p>
+                        </div>
+
+                        <h3 class="text-lg font-bold text-white mb-4">Résultats Business Obtenus (Cas réel)</h3>
+                        <div class="grid md:grid-cols-2 gap-4 mb-8">
+                            <div class="flex items-start p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                                <i class="fas fa-clock text-2xl text-green-400 mr-4 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-white">Gain de 5h / semaine</h4>
+                                    <p class="text-sm text-slate-400">Finis les exports manuels depuis Excel. Le reporting est devenu instantané et automatisé.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                                <i class="fas fa-chart-pie text-2xl text-purple-400 mr-4 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-white">Erreurs de stock : -30%</h4>
+                                    <p class="text-sm text-slate-400">Grâce aux alertes visuelles sur les seuils critiques intégrées directement sur le dashboard.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center p-6 bg-gradient-to-r from-slate-900 to-brand-900/30 rounded-xl border border-slate-700 shadow-inner">
+                            <h3 class="text-xl font-bold text-white mb-2">Vous voulez un outil similaire pour votre PME ?</h3>
+                            <p class="text-slate-400 mb-6 text-sm">Nous pouvons l'adapter à vos données spécifiques, que vous utilisiez Excel, un ERP ou des carnets de reçus.</p>
+                            <a href="https://wa.me/243893958170?text=Bonjour%20Gilbert,%20j'ai%20vu%20votre%20projet%20Dashboard%20BI%20sur%20votre%20portfolio.%20Je%20souhaite%20en%20discuter%20pour%20mon%20entreprise." target="_blank" class="inline-flex px-8 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-bold items-center transition-transform hover:-translate-y-1 shadow-[0_0_15px_rgba(14,165,233,0.4)]">
+                                <i class="fab fa-whatsapp text-xl mr-2"></i> Demander une démo sur WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- GESTION DU SIDEBAR (Identique Page 1) ---
+
+        // const ALL_PROJECTS = [
+        //     { id: 1, name: "Dashboard BI & Analytics", url: "projet1.html", icon: "fa-chart-pie" },
+        //     { id: 2, name: "Modèle de Prédiction ML", url: "projet2.html", icon: "fa-brain" },
+        //     { id: 3, name: "Web Scraping & Automation", url: "projet3.html", icon: "fa-robot" },
+        //     { id: 4, name: "Centre IoT & Flotte", url: "projet4.html", icon: "fa-satellite-dish" },
+        //     { id: 5, name: "Terminal Forex & Devises", url: "projet5.html", icon: "fa-chart-line" }
+        // ];
+
+        const ALL_PROJECTS = [
+            { id: 4, name: "Centre IoT & Flotte", url: "projet4.html", icon: "fa-satellite-dish" },
+            { id: 5, name: "Terminal Forex & Devises", url: "projet5.html", icon: "fa-chart-line" },
+            // #######
+            { id: 1, name: "Dashboard BI & Analytics", url: "projet1.html", icon: "fa-chart-pie" },
+            { id: 2, name: "Modèle de Prédiction ML", url: "projet2.html", icon: "fa-brain" },
+            { id: 3, name: "Web Scraping & Automation", url: "projet3.html", icon: "fa-robot" },
+        ];
+
+        const projectsListEl = document.getElementById('projectsList');
+        ALL_PROJECTS.forEach(p => {
+            const isActive = p.id === 1 ? 'bg-brand-500/20 text-brand-400 border-brand-500/50' : 'hover:bg-slate-800/50 text-slate-300 hover:text-white border-transparent';
+            projectsListEl.innerHTML += `
+                <li><a href="${p.url}" class="group flex items-center p-2 rounded-lg transition-colors border ${isActive}">
+                    <span class="w-7 h-7 rounded-md bg-slate-800 flex items-center justify-center mr-3"><i class="fas ${p.icon} text-xs"></i></span>
+                    <span class="text-sm truncate font-medium">${p.name}</span>
+                </a></li>`;
+        });
+
+        document.getElementById('openSidebar').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.remove('hidden');
+            setTimeout(() => document.getElementById('sidebarOverlay').classList.remove('opacity-0'), 10);
+        });
+        const closeMenu = () => {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.add('opacity-0');
+            setTimeout(() => document.getElementById('sidebarOverlay').classList.add('hidden'), 300);
+        };
+        document.getElementById('closeSidebar').addEventListener('click', closeMenu);
+        document.getElementById('sidebarOverlay').addEventListener('click', closeMenu);
+
+        // --- GESTION DES ONGLETS ---
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('active', 'text-brand-400', 'border-brand-500', 'bg-brand-500/5');
+                    t.classList.add('text-slate-400', 'border-transparent');
+                });
+                tab.classList.add('active', 'text-brand-400', 'border-brand-500', 'bg-brand-500/5');
+                tab.classList.remove('text-slate-400', 'border-transparent');
+                
+                contents.forEach(c => c.classList.remove('active'));
+                document.getElementById(tab.dataset.target).classList.add('active');
+            });
+        });
+
+        // --- SIMULATEUR DE DONNÉES COHÉRENTES (API Mock) ---
+        const mockDB = {
+            'all': { baseCA: 15000, maxCmd: 142, top5: [ {n: 'Panneau Solaire 300W', p: 3500}, {n: 'Batterie Gel 200Ah', p: 2800}, {n: 'Pneu Camion 315/80', p: 1500}, {n: 'Huile Moteur 50L', p: 1200}, {n: 'Onduleur Hybride 3KVA', p: 900}], stockCritique: [{n: 'Panneau Solaire 300W', q: 2}, {n: 'Filtre à air X20', q: 5}, {n: 'Câble Solaire 6mm', q: 15}], stockVals: [40, 35, 25] },
+            'energie': { baseCA: 9000, maxCmd: 85, top5: [ {n: 'Panneau Solaire 300W', p: 3500}, {n: 'Batterie Gel 200Ah', p: 2800}, {n: 'Onduleur Hybride 3KVA', p: 1200}, {n: 'Générateur 5KVA', p: 800}, {n: 'Régulateur MPPT', p: 400}], stockCritique: [{n: 'Panneau Solaire 300W', q: 2}, {n: 'Câble Solaire 6mm', q: 15}], stockVals: [60, 30, 10] },
+            'logistique': { baseCA: 6000, maxCmd: 57, top5: [ {n: 'Pneu Camion 315/80', p: 2500}, {n: 'Huile Moteur 50L', p: 1500}, {n: 'Plaquettes Frein Poids Lourd', p: 800}, {n: 'Batterie Camion 12V', p: 700}, {n: 'Filtre Gazoil', p: 300}], stockCritique: [{n: 'Filtre à air X20', q: 5}, {n: 'Huile Moteur 50L', q: 1}], stockVals: [20, 50, 30] }
+        };
+
+        // Instances Chart.js
+        let salesChart, stockChart;
+
+        function initCharts() {
+            const ctxSales = document.getElementById('salesChart').getContext('2d');
+            let gradient = ctxSales.createLinearGradient(0, 0, 0, 250);
+            gradient.addColorStop(0, 'rgba(14, 165, 233, 0.4)'); gradient.addColorStop(1, 'rgba(14, 165, 233, 0.0)');
+            
+            salesChart = new Chart(ctxSales, {
+                type: 'line',
+                data: { labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'], datasets: [{ label: 'Ventes ($)', data: [], borderColor: '#0ea5e9', backgroundColor: gradient, borderWidth: 2, fill: true, tension: 0.4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(30,41,59,0.5)' }, ticks: { color: '#64748b' } }, x: { grid: { display: false }, ticks: { color: '#64748b' } } }, animation: { duration: 400 } }
+            });
+
+            const ctxStock = document.getElementById('stockChart').getContext('2d');
+            stockChart = new Chart(ctxStock, {
+                type: 'doughnut',
+                data: { labels: ['Haute Rotation', 'Moyenne', 'Basse (Dormant)'], datasets: [{ data: [], backgroundColor: ['#0ea5e9', '#8b5cf6', '#334155'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1', padding: 20, font: {size: 11} } } }, cutout: '75%', animation: { duration: 400 } }
+            });
+        }
+
+        // Moteur de mise à jour instantanée
+        function updateDashboard() {
+            const cat = document.getElementById('categoryFilter').value;
+            const objectif = parseInt(document.getElementById('objectifSlider').value);
+            
+            const data = mockDB[cat];
+            
+            // Calculs basés sur le curseur et la catégorie
+            // On simule que le CA réel est proportionnel à l'objectif demandé (ex: on réalise 80% de l'objectif sur la catégorie sélectionnée)
+            let ratioObjectif = objectif / 15000; // 15000 est la base 100%
+            let CA_Reel = Math.round(data.baseCA * ratioObjectif);
+            let cmds_reelles = Math.round(data.maxCmd * ratioObjectif);
+            let progression = Math.min(Math.round((CA_Reel / objectif) * 100), 100);
+            
+            // Update UI KPIs
+            document.getElementById('sliderValueText').innerText = objectif.toLocaleString() + ' $';
+            document.getElementById('kpi-ca').innerText = CA_Reel.toLocaleString() + ' $';
+            document.getElementById('kpi-cmds').innerText = cmds_reelles;
+            document.getElementById('kpi-prog').innerText = progression + '%';
+            document.getElementById('kpi-prog-bar').style.width = progression + '%';
+            document.getElementById('kpi-prog-bar').className = `h-1.5 transition-all duration-500 ${progression >= 100 ? 'bg-green-500' : (progression > 50 ? 'bg-brand-500' : 'bg-red-500')}`;
+            document.getElementById('kpi-prog').className = `text-xl md:text-2xl font-bold ${progression >= 100 ? 'text-green-400' : (progression > 50 ? 'text-brand-400' : 'text-red-400')}`;
+
+            // Update Top 5 List
+            const topListEl = document.getElementById('topProductsList');
+            topListEl.innerHTML = '';
+            data.top5.forEach((p, index) => {
+                let pValue = Math.round(p.p * ratioObjectif);
+                let barWidth = Math.max((pValue / (data.top5[0].p * ratioObjectif)) * 100, 10);
+                topListEl.innerHTML += `
+                    <li class="flex items-center justify-between text-sm gap-2">
+                        <div class="flex items-center flex-1 min-w-0">
+                            <span class="w-5 text-slate-500 font-bold flex-shrink-0">${index+1}.</span>
+                            <span class="text-slate-300 truncate">${p.n}</span>
+                        </div>
+                        <div class="flex items-center justify-end flex-shrink-0 gap-3">
+                            <span class="text-white font-medium whitespace-nowrap">${pValue.toLocaleString()} $</span>
+                            <div class="w-12 md:w-16 h-1.5 bg-slate-700 rounded-full hidden sm:block">
+                                <div class="h-1.5 bg-brand-500 rounded-full" style="width: ${barWidth}%"></div>
+                            </div>
+                        </div>
+                    </li>`;
+            });
+
+            // Update Stock Tab
+            document.getElementById('kpi-rupture').innerText = data.stockCritique.length + ' articles';
+            document.getElementById('kpi-stock-val').innerText = Math.round(42500 * (CA_Reel/15000)).toLocaleString() + ' $';
+            
+            const stockTableEl = document.getElementById('stockTableBody');
+            stockTableEl.innerHTML = '';
+            data.stockCritique.forEach(p => {
+                stockTableEl.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition-colors">
+                        <td class="px-4 py-3 font-medium text-white">${p.n}</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 bg-red-500/10 text-red-400 border border-red-500/20 rounded-md text-xs font-bold">${p.q} unités</span></td>
+                        <td class="px-4 py-3"><button class="text-xs text-brand-400 hover:text-white border border-brand-500/50 px-2 py-1 rounded bg-brand-500/10">Commander</button></td>
+                    </tr>`;
+            });
+
+            // Update Bilan Text
+            const catName = document.getElementById('categoryFilter').options[document.getElementById('categoryFilter').selectedIndex].text;
+            let analyseText = `L'analyse des données montre que pour le secteur <strong>"${catName}"</strong> et avec un objectif ciblé de <strong>${objectif.toLocaleString()} $</strong>, le système projette des ventes de <strong>${CA_Reel.toLocaleString()} $</strong> (${progression}% de l'objectif). `;
+            if (data.stockCritique.length > 0) {
+                analyseText += `Cependant, <strong>${data.stockCritique.length} articles</strong> critiques (comme le <em>${data.stockCritique[0].n}</em>) sont en risque de rupture immédiate, nécessitant une réapprovisionnement pour garantir ce chiffre d'affaires.`;
+            } else {
+                analyseText += `Le stock est actuellement suffisant pour soutenir cette demande.`;
+            }
+            document.getElementById('interpretationText').innerHTML = analyseText;
+
+            // Update Charts Data
+            let trendBase = [0.2, 0.4, 0.3, 0.6, 0.8, 1.0]; // Courbe de croissance
+            salesChart.data.datasets[0].data = trendBase.map(t => Math.round((CA_Reel * t) / 2));
+            salesChart.update();
+
+            stockChart.data.datasets[0].data = data.stockVals;
+            stockChart.update();
+        }
+
+        // Listeners
+        document.getElementById('categoryFilter').addEventListener('change', updateDashboard);
+        document.getElementById('objectifSlider').addEventListener('input', updateDashboard);
+
+        // Init
+        initCharts();
+        updateDashboard();
+    </script>
+</body>
+</html>

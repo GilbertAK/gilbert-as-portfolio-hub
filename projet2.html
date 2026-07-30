@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet Machine Learning & Transport | Gilbert ASANI KAMARA</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0f9ff', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 900: '#0c4a6e' },
+                        dark: { bg: '#020617', card: '#0f172a', border: '#1e293b' },
+                        ml: { 400: '#a78bfa', 500: '#8b5cf6', 900: '#4c1d95' }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8b5cf6; }
+        .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(30, 41, 59, 1); }
+        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        input[type=range] { -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #8b5cf6; cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px rgba(139, 92, 246, 0.5); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #1e293b; border-radius: 2px; }
+    </style>
+</head>
+<body class="bg-dark-bg text-slate-300 font-sans antialiased overflow-x-hidden">
+
+    <!-- OVERLAY MOBILE -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 z-40 hidden backdrop-blur-sm transition-opacity duration-300 opacity-0 lg:hidden"></div>
+
+    <!-- DEBUT DU SIDEBAR -->
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 md:w-80 bg-dark-card border-r border-dark-border z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col overflow-y-auto">
+        <button id="closeSidebar" class="absolute top-4 right-4 text-slate-400 hover:text-white lg:hidden">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+        <div class="p-8 flex-1 flex flex-col">
+            <div class="text-center mb-8">
+                <div class="relative inline-block">
+                    <img src="assets/profil.jpg" alt="Gilbert ASANI KAMARA" class="relative w-28 h-28 rounded-full border-2 border-brand-500 object-cover mx-auto shadow-xl" onerror="this.src='https://ui-avatars.com/api/?name=Gilbert+Asani&background=0ea5e9&color=fff&size=200'">
+                </div>
+                <h2 class="mt-4 text-xl font-bold text-white tracking-wide">Gilbert ASANI</h2>
+                <p class="text-sm text-brand-400 font-medium mt-1">Data & Web Specialist</p>
+            </div>
+            <div class="mb-8 text-sm text-slate-400 leading-relaxed">
+                <p>Développeur Python depuis 2019. Expert en Data Science, Automatisation et création de plateformes web sur-mesure pour booster la productivité des PME.</p>
+            </div>
+            <div class="mb-8">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-4">Mes Réalisations</h3>
+                <ul id="projectsList" class="space-y-2"></ul>
+            </div>
+
+            <!-- DEBUT SECTION TECHNICAL DNA -->
+            <div class="mb-10 pt-8 border-t border-dark-border">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-6 flex items-center justify-between">
+                    Technical DNA
+                    <i class="fas fa-code text-brand-500"></i>
+                </h3>
+                
+                <div class="space-y-5 text-sm">
+                    <!-- Compétence 1: Python -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Python / Web Scraping</span>
+                            <span class="text-slate-500">Expert</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 95%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 2: Data Science -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Data Science / IA (ML & DL)</span>
+                            <span class="text-slate-500">Avancé</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 82%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 3: Algorithmic Trading -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Algorithmic Trading</span>
+                            <span class="text-slate-500">Avancé</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 72%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Compétence 4: Full-Stack -->
+                    <div>
+                        <div class="flex justify-between text-slate-300 mb-1.5">
+                            <span class="font-medium">Full-Stack (JS/CSS)</span>
+                            <span class="text-slate-500">Expert</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-brand-500 h-2 rounded-full" style="width: 92%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- FIN SECTION TECHNICAL DNA -->
+
+            <!-- Contacts -->
+            <div class="mt-auto pt-6 border-t border-dark-border">
+                <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-4">Me Contacter</h3>
+                <a href="https://wa.me/243893958170" target="_blank" class="flex items-center text-sm text-slate-300 hover:text-green-400 mb-3 group">
+                    <div class="w-8 h-8 rounded bg-slate-800/50 flex items-center justify-center mr-3 group-hover:bg-green-400/20"><i class="fab fa-whatsapp text-lg group-hover:text-green-400"></i></div>
+                    +243 89 39 58 170
+                </a>
+                <a href="mailto:gilbertakg@gmail.com" class="flex items-center text-sm text-slate-300 hover:text-brand-400 group">
+                    <div class="w-8 h-8 rounded bg-slate-800/50 flex items-center justify-center mr-3 group-hover:bg-brand-500/20"><i class="fas fa-envelope text-sm group-hover:text-brand-400"></i></div>
+                    <span class="truncate">gilbertakg@gmail.com</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+    <!-- FIN DU SIDEBAR -->
+
+    <!-- MAIN CONTENT -->
+    <main class="lg:ml-80 relative min-h-screen pb-20">
+        <!-- Mobile Navbar -->
+        <nav class="lg:hidden flex items-center justify-between p-4 bg-dark-card border-b border-dark-border sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <img src="assets/profil.jpg" alt="Gilbert" class="w-10 h-10 rounded-full border border-brand-500 object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Gilbert+Asani&background=0ea5e9&color=fff'">
+                <span class="font-bold text-white">Portfolio Hub</span>
+            </div>
+            <button id="openSidebar" class="text-slate-300 hover:text-white p-2"><i class="fas fa-bars text-2xl"></i></button>
+        </nav>
+
+        <div class="px-4 md:px-8 py-8 max-w-7xl mx-auto">
+            
+            <!-- EN-TÊTE DU PROJET -->
+            <a href="index.html" class="inline-flex items-center text-ml-400 hover:text-ml-500 text-sm font-medium mb-6 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> Retour au Hub
+            </a>
+            
+            <header class="mb-10">
+                <div class="inline-block px-3 py-1 rounded bg-ml-500/10 border border-ml-500/30 text-ml-400 text-xs font-bold uppercase tracking-wider mb-4">Cas d'Étude Logistique & Transport</div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">Moteur d'IA : Prédiction de la Demande & Rétention (Churn)</h1>
+                <p class="text-slate-400 text-lg max-w-3xl leading-relaxed">
+                    Spécialement conçu pour des entreprises de transport ou de services (type <strong>Working Ladies Cabs</strong>, <strong>Sodeico</strong>) : anticipez les pics de courses/demandes et identifiez les clients risquant de quitter le service avant qu'il ne soit trop tard.
+                </p>
+            </header>
+
+            <!-- DASHBOARD ML INTERACTIF -->
+            <div class="glass-card rounded-xl border-slate-700 overflow-hidden shadow-[0_10px_40px_-15px_rgba(139,92,246,0.2)]">
+                
+                <!-- PANNEAU DE CONTRÔLE (Paramètres dynamiques) -->
+                <div class="bg-slate-800/50 p-4 border-b border-slate-700 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-slate-400 font-medium"><i class="fas fa-taxi text-ml-400 mr-1"></i> Demande Transport / Courses (Par jour)</label>
+                        <div class="flex items-center gap-3">
+                            <input type="range" id="coursesSlider" min="50" max="500" step="10" value="220" class="w-full">
+                            <span id="valCourses" class="text-white font-bold text-sm w-12 text-right">220</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-slate-400 font-medium"><i class="fas fa-star text-yellow-500 mr-1"></i> Note Service Client (/5)</label>
+                        <div class="flex items-center gap-3">
+                            <input type="range" id="noteSlider" min="1" max="5" step="0.5" value="4.0" class="w-full">
+                            <span id="valNote" class="text-white font-bold text-sm w-8">4.0</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <label class="text-xs text-slate-400 font-medium whitespace-nowrap"><i class="fas fa-clock mr-1"></i> Période / Heure de pointe :</label>
+                        <select id="horaireSelect" class="bg-slate-900 border border-slate-700 text-white text-sm rounded-lg focus:ring-ml-500 focus:border-ml-500 block w-full p-2 outline-none">
+                            <option value="1.0">Heures Normales</option>
+                            <option value="1.5">Heure de Pointe (Matin/Soir)</option>
+                            <option value="0.7">Heure Creuse (Nuit/Jour férié)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- ONGLETS DE NAVIGATION -->
+                <div class="flex overflow-x-auto border-b border-slate-700 hide-scrollbar" id="mlTabs">
+                    <button class="tab-btn active px-6 py-4 text-sm font-medium text-ml-400 border-b-2 border-ml-500 whitespace-nowrap bg-ml-500/5" data-target="tab-churn">
+                        <i class="fas fa-user-shield mr-2"></i> Rétention Client (Churn)
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm font-medium text-slate-400 border-b-2 border-transparent hover:text-slate-200 whitespace-nowrap" data-target="tab-forecast">
+                        <i class="fas fa-chart-line mr-2"></i> Prévision des Pics de Demande
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm font-medium text-slate-400 border-b-2 border-transparent hover:text-slate-200 whitespace-nowrap" data-target="tab-interpretation">
+                        <i class="fas fa-brain mr-2"></i> Bilan & Pipeline IA
+                    </button>
+                </div>
+
+                <!-- CONTENU DES ONGLETS -->
+                <div class="p-4 md:p-6 bg-slate-900/30 w-full overflow-hidden">
+                    
+                    <!-- ONGLET 1 : CHURN PREDICTION (Corrigé anti-scission) -->
+                    <div id="tab-churn" class="tab-content active w-full">
+                        <div class="flex flex-col lg:grid lg:grid-cols-3 gap-6 w-full">
+                            
+                            <!-- Gauge de probabilité -->
+                            <div class="bg-slate-800/30 p-6 rounded-xl border border-slate-700 flex flex-col items-center justify-center text-center w-full overflow-hidden">
+                                <h3 class="text-sm font-semibold text-slate-300 mb-2">Risque de Churn Client</h3>
+                                <p class="text-xs text-slate-500 mb-4">Basé sur la note de service et la fréquence</p>
+                                <div class="relative w-40 h-40 flex-shrink-0 mx-auto">
+                                    <canvas id="churnGauge"></canvas>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center mt-4">
+                                        <span id="churnPercentage" class="text-3xl font-black text-white">12%</span>
+                                        <span id="churnStatus" class="text-xs font-bold text-green-400 mt-1 px-2 text-center w-full">FAIBLE RISQUE</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tableau des clients / passagers à risque -->
+                            <div class="bg-slate-800/30 p-4 rounded-xl border border-slate-700 lg:col-span-2 w-full overflow-hidden">
+                                <h3 class="text-sm font-semibold text-slate-300 mb-4">Top Abonnés / Partenaires à Risque</h3>
+                                <div class="overflow-x-auto w-full pb-2">
+                                    <table class="w-full text-left text-sm text-slate-400 whitespace-nowrap">
+                                        <thead class="text-xs uppercase bg-slate-900 text-slate-500">
+                                            <tr>
+                                                <th class="px-4 py-3">Client / Entreprise</th>
+                                                <th class="px-4 py-3">Courses / Mois</th>
+                                                <th class="px-4 py-3">Probabilité Churn</th>
+                                                <th class="px-4 py-3 min-w-[180px]">Action Recommandée</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="clientsTable" class="divide-y divide-slate-700">
+                                            <!-- JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET 2 : FORECAST (Prévisions de Demande) -->
+                    <div id="tab-forecast" class="tab-content w-full">
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
+                                <p class="text-xs text-slate-400 mb-1">Demande Prévue (Prochaine Heure)</p>
+                                <h3 class="text-2xl font-bold text-white" id="kpi-demande">45 courses</h3>
+                                <p class="text-xs text-ml-400 mt-1"><i class="fas fa-bolt"></i> Ajusté en temps réel</p>
+                            </div>
+                            <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
+                                <p class="text-xs text-slate-400 mb-1">Véhicules Requis sur le Terrain</p>
+                                <h3 class="text-2xl font-bold text-brand-400" id="kpi-vehicules">38 unités</h3>
+                                <p class="text-xs text-slate-500 mt-1">Optimisation flotte</p>
+                            </div>
+                            <div class="bg-ml-900/10 border border-ml-500/20 p-4 rounded-lg flex items-center">
+                                <i class="fas model-pipeline text-3xl text-ml-400 opacity-50 mr-3"></i>
+                                <div>
+                                    <h4 class="text-xs font-bold text-ml-400 uppercase">Pipeline Scikit-Learn</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Modèle de régression linéaire entraîné sur l'historique horaire.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800/30 p-4 rounded-xl border border-slate-700 relative h-[280px] w-full">
+                            <canvas id="forecastChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET 3 : BILAN & INTERPRÉTATION -->
+                    <div id="tab-interpretation" class="tab-content w-full">
+                        <div class="bg-ml-900/20 border border-ml-500/30 rounded-xl p-6 mb-6 relative overflow-hidden">
+                            <div class="absolute -right-10 -top-10 text-ml-500/10 text-9xl"><i class="fas fa-brain"></i></div>
+                            <h3 class="text-lg font-bold text-ml-400 mb-3 relative z-10"><i class="fas fa-robot mr-2"></i> Bilan Global & Interprétation IA</h3>
+                            <p id="dynamicReportText" class="text-slate-300 leading-relaxed text-sm relative z-10">
+                                <!-- Généré dynamiquement -->
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-8">
+                            <div class="flex items-start p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                                <i class="fas fa-network-wired text-2xl text-ml-400 mr-4 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-white">Pipeline de Données Robuste</h4>
+                                    <p class="text-sm text-slate-400">Pandas / NumPy pour le nettoyage des flux, Scikit-Learn pour la modélisation prédictive, connectés à une API Flask légère.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                                <i class="fas fa-clock text-2xl text-green-400 mr-4 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-white">Administration en Temps Réel</h4>
+                                    <p class="text-sm text-slate-400">Le manager ajuste les curseurs sur son interface web mobile et adapte immédiatement la flotte de transport aux besoins réels.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center p-6 bg-gradient-to-r from-slate-900 to-ml-900/30 rounded-xl border border-slate-700 shadow-inner">
+                            <h3 class="text-xl font-bold text-white mb-2">Besoin d'optimiser vos décisions grâce au Machine Learning ?</h3>
+                            <p class="text-slate-400 mb-6 text-sm">Déployons un modèle prédictif sur-mesure adapté aux spécificités de votre flotte ou de votre service client.</p>
+                            <a href="https://wa.me/243893958170?text=Bonjour%20Gilbert,%20je%20souhaite%20discuter%20d'un%20projet%20de%20Machine%20Learning%20pour%20mon%20entreprise." target="_blank" class="inline-flex px-8 py-3 bg-ml-500 hover:bg-ml-400 text-white rounded-lg font-bold items-center transition-transform hover:-translate-y-1 shadow-[0_0_15px_rgba(139,92,246,0.4)]">
+                                <i class="fab fa-whatsapp text-xl mr-2"></i> Contacter via WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- GESTION DU SIDEBAR ---
+
+        // const ALL_PROJECTS = [
+        //     { id: 1, name: "Dashboard BI & Analytics", url: "projet1.html", icon: "fa-chart-pie" },
+        //     { id: 2, name: "Modèle de Prédiction ML", url: "projet2.html", icon: "fa-brain" },
+        //     { id: 3, name: "Web Scraping & Automation", url: "projet3.html", icon: "fa-robot" },
+        //     { id: 4, name: "Centre IoT & Flotte", url: "projet4.html", icon: "fa-satellite-dish" },
+        //     { id: 5, name: "Terminal Forex & Devises", url: "projet5.html", icon: "fa-chart-line" }
+        // ];
+
+
+        const ALL_PROJECTS = [
+            { id: 4, name: "Centre IoT & Flotte", url: "projet4.html", icon: "fa-satellite-dish" },
+            { id: 5, name: "Terminal Forex & Devises", url: "projet5.html", icon: "fa-chart-line" },
+            // #######
+            { id: 1, name: "Dashboard BI & Analytics", url: "projet1.html", icon: "fa-chart-pie" },
+            { id: 2, name: "Modèle de Prédiction ML", url: "projet2.html", icon: "fa-brain" },
+            { id: 3, name: "Web Scraping & Automation", url: "projet3.html", icon: "fa-robot" },
+        ];
+
+        const projectsListEl = document.getElementById('projectsList');
+        ALL_PROJECTS.forEach(p => {
+            const isActive = p.id === 2 ? 'bg-ml-500/20 text-ml-400 border-ml-500/50' : 'hover:bg-slate-800/50 text-slate-300 hover:text-white border-transparent';
+            projectsListEl.innerHTML += `
+                <li><a href="${p.url}" class="group flex items-center p-2 rounded-lg transition-colors border ${isActive}">
+                    <span class="w-7 h-7 rounded-md bg-slate-800 flex items-center justify-center mr-3"><i class="fas ${p.icon} text-xs"></i></span>
+                    <span class="text-sm truncate font-medium">${p.name}</span>
+                </a></li>`;
+        });
+
+        // Toggle Sidebar Mobile
+        document.getElementById('openSidebar').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.remove('hidden');
+            setTimeout(() => document.getElementById('sidebarOverlay').classList.add('opacity-0'), 10);
+        });
+        const closeMenu = () => {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.add('opacity-0');
+            setTimeout(() => document.getElementById('sidebarOverlay').classList.add('hidden'), 300);
+        };
+        document.getElementById('closeSidebar').addEventListener('click', closeMenu);
+        document.getElementById('sidebarOverlay').addEventListener('click', closeMenu);
+
+        // --- GESTION DES ONGLETS ---
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('active', 'text-ml-400', 'border-ml-500', 'bg-ml-500/5');
+                    t.classList.add('text-slate-400', 'border-transparent');
+                });
+                tab.classList.add('active', 'text-ml-400', 'border-ml-500', 'bg-ml-500/5');
+                tab.classList.remove('text-slate-400', 'border-transparent');
+                
+                contents.forEach(c => c.classList.remove('active'));
+                document.getElementById(tab.dataset.target).classList.add('active');
+            });
+        });
+
+        // --- SIMULATEUR DE DONNÉES COHÉRENTES & ML ---
+        let churnGauge, forecastChart;
+
+        const mockClients = [
+            { nom: "Working Ladies VIP", courses: 120, baseRisk: 25, promo: "Offre fidélité mensuelle" },
+            { nom: "Partenaire Sodeico Corporate", courses: 85, baseRisk: 40, promo: "Appel de suivi commercial" },
+            { nom: "Passager Régulier Kin", courses: 40, baseRisk: 75, promo: "Code promo réactivation -30%" }
+        ];
+
+        function initCharts() {
+            const ctxChurn = document.getElementById('churnGauge').getContext('2d');
+            churnGauge = new Chart(ctxChurn, {
+                type: 'doughnut',
+                data: { datasets: [{ data: [12, 88], backgroundColor: ['#22c55e', '#1e293b'], borderWidth: 0, borderRadius: 5 }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '80%', rotation: -90, circumference: 180, plugins: { tooltip: { enabled: false } }, animation: { duration: 400 } }
+            });
+
+            const ctxForecast = document.getElementById('forecastChart').getContext('2d');
+            forecastChart = new Chart(ctxForecast, {
+                type: 'line',
+                data: { 
+                    labels: ['06h', '09h (Pointe)', '12h', '15h', '18h (Pointe)', '21h', '00h'], 
+                    datasets: [
+                        { label: 'Demande Réelle / Historique', data: [30, 110, 65, 70, 140, 50, 15], borderColor: '#64748b', tension: 0.4, borderWidth: 2 },
+                        { label: 'Prédiction Modèle IA', data: [null, null, null, null, 140, 85, 30], borderColor: '#8b5cf6', borderDash: [5, 5], tension: 0.4, borderWidth: 3, pointBackgroundColor: '#8b5cf6', pointRadius: 4 }
+                    ] 
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    plugins: { legend: { labels: { color: '#cbd5e1', font: {size: 11} } } }, 
+                    scales: { y: { grid: { color: 'rgba(30,41,59,0.5)' }, ticks: { color: '#64748b' } }, x: { grid: { display: false }, ticks: { color: '#64748b' } } } 
+                }
+            });
+        }
+
+        function updateSimulation() {
+            const courses = parseInt(document.getElementById('coursesSlider').value);
+            const note = parseFloat(document.getElementById('noteSlider').value);
+            const horaireMultiplier = parseFloat(document.getElementById('horaireSelect').value);
+
+            document.getElementById('valCourses').innerText = courses;
+            document.getElementById('valNote').innerText = note.toFixed(1);
+
+            // Calcul churn basé sur la note de service (plus la note est basse, plus le risque augmente)
+            let probaChurn = Math.round(((5 - note) / 4) * 80);
+            if(probaChurn < 5) probaChurn = 5;
+
+            let color = '#22c55e', statusText = 'FAIBLE RISQUE';
+            if(probaChurn > 30 && probaChurn <= 60) { color = '#eab308'; statusText = 'RISQUE MODÉRÉ'; }
+            else if(probaChurn > 60) { color = '#ef4444'; statusText = 'RISQUE ÉLEVÉ'; }
+
+            document.getElementById('churnPercentage').innerText = probaChurn + '%';
+            document.getElementById('churnPercentage').style.color = color;
+            document.getElementById('churnStatus').innerText = statusText;
+            document.getElementById('churnStatus').style.color = color;
+
+            churnGauge.data.datasets[0].data = [probaChurn, 100 - probaChurn];
+            churnGauge.data.datasets[0].backgroundColor[0] = color;
+            churnGauge.update();
+
+            // Mise à jour tableau clients
+            const tableBody = document.getElementById('clientsTable');
+            tableBody.innerHTML = '';
+            mockClients.forEach(c => {
+                let currentRisk = Math.min(Math.round(c.baseRisk * (5 - note) / 3), 99);
+                let badgeClass = currentRisk > 60 ? 'bg-red-500/10 text-red-400 border-red-500/20' : (currentRisk > 30 ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' : 'bg-green-500/10 text-green-400 border-green-500/20');
+                
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition-colors border-b border-slate-700/50 last:border-0">
+                        <td class="px-4 py-3 font-medium text-white">${c.nom}</td>
+                        <td class="px-4 py-3 text-slate-400">${Math.round(c.courses * (courses/220))} courses</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 border rounded-md text-xs font-bold ${badgeClass}">${currentRisk}%</span></td>
+                        <td class="px-4 py-3 text-xs text-ml-400">${currentRisk > 40 ? c.promo : 'Suivi standard'}</td>
+                    </tr>`;
+            });
+
+            // Prévision demande
+            let demandePrevue = Math.round(courses * horaireMultiplier * 0.25);
+            let vehiculesRequis = Math.round(demandePrevue * 0.85);
+            document.getElementById('kpi-demande').innerText = demandePrevue + ' courses';
+            document.getElementById('kpi-vehicules').innerText = vehiculesRequis + ' unités';
+
+            // Mise à jour graphique forecast
+            let baseForecastCurve = [30, 110, 65, 70, Math.round(140 * horaireMultiplier), Math.round(50 * horaireMultiplier), 15];
+            forecastChart.data.datasets[1].data = [null, null, null, null, baseForecastCurve[4], baseForecastCurve[5], baseForecastCurve[6]];
+            forecastChart.update();
+
+            // Bilan / Interprétation IA dynamique
+            let report = `Le modèle Scikit-Learn analyse en temps réel les flux de transport. Avec une note moyenne de satisfaction de <strong>${note.toFixed(1)}/5</strong>, le taux de churn estimé est de <strong>${probaChurn}%</strong>. `;
+            if(note < 3.5) {
+                report += `Attention : Une baisse de qualité de service déclenche des alertes automatiques sur les comptes clés comme <em>Working Ladies Cabs</em> ou <em>Sodeico</em>. Il est recommandé d'intervenir.`;
+            } else {
+                report += `La rétention des clients est excellente. Les prévisions indiquent un pic de <strong>${demandePrevue} courses</strong> nécessitant la mobilisation d'au moins <strong>${vehiculesRequis} véhicules</strong> sur le terrain.`;
+            }
+            document.getElementById('dynamicReportText').innerHTML = report;
+        }
+
+        document.getElementById('coursesSlider').addEventListener('input', updateSimulation);
+        document.getElementById('noteSlider').addEventListener('input', updateSimulation);
+        document.getElementById('horaireSelect').addEventListener('change', updateSimulation);
+
+        initCharts();
+        updateSimulation();
+    </script>
+</body>
+</html>
+
